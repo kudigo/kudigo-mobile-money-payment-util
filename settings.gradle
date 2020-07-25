@@ -1,2 +1,3 @@
+include ':momolibrary'
 include ':app'
 rootProject.name = "kudigo-mobile-money-util"
