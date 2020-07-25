@@ -1,12 +1,13 @@
 <resources>
-    <string name="app_name">kudigo-mobile-money-util</string>
+    <string name="app_name">KudiGo Mobile Money Util</string>
 
     <string name="mtn_mobile_money" translatable="false">MTN Mobile Money</string>
     <string name="application_name" translatable="false">KudiGo StoreFront</string>
-    <string name="kudigo_storefront_payment">StoreFront Payment</string>
+    <string name="kudigo_storefront_payment">KudiGo Payment</string>
     <string name="order_no">Order No.:</string>
     <string name="momo_authorization_message">An authorization request is sent to the customer\'s phone. Entreat the customer to complete it.</string>
     <string name="done">DONE</string>
     <string name="cancel">CANCEL</string>
     <string name="retry">RETRY</string>
+    <string name="change_network">CHANGE</string>
 </resources>
