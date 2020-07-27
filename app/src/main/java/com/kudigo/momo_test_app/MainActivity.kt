@@ -1,22 +1,21 @@
 package com.kudigo.momo_test_app
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import com.kudigo.mobile_money_util.MakePayment
-import com.kudigo.mobile_money_util.PaymentCallbackInterface
-import com.kudigo.mobile_money_util.PaymentInfo
+import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    private val amount: Double = 0.0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val paymentInfo = PaymentInfo(
+        val paymentInfo = MoMoPaymentInfo(
             id = "1",
             name = "Jay",
             network = "MTN",
@@ -24,11 +23,11 @@ class MainActivity : AppCompatActivity() {
             reference = "0987",
             status = "",
             voucherCode = "",
-            amountPaid = amount
+            amountPaid = 10.0
         )
 
         buttonPay.setOnClickListener {
-            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, amount, object : PaymentCallbackInterface {
+            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : PaymentCallbackInterface {
                 override fun onSuccess(network: String, number: String) {
                     TODO("Not yet implemented")
                 }

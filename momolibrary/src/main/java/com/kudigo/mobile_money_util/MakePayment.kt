@@ -1,15 +1,17 @@
 package com.kudigo.mobile_money_util
 
 import androidx.appcompat.app.AppCompatActivity
+import com.kudigo.mobile_money_util.bottom_sheet.BottomSheetPaymentProcessor
+import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.data.MoMoPaymentExtraInfo
+import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 
 class MakePayment(private var context: AppCompatActivity) {
-    private var amount: Double? = null
     private var callBack: PaymentCallbackInterface? = null
     private var tag = "PAYMENT_HANDLER"
 
     // Show MOMO processor
-    fun startMoMoPaymentProcessor(paymentInfo: PaymentInfo, amount: Double, paymentCallbackInterface: PaymentCallbackInterface) {
-        this.amount = amount
+    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: PaymentCallbackInterface) {
         this.callBack = paymentCallbackInterface
 
         // MARK: internet connection not available

@@ -1,16 +1,19 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.bottom_sheet
 
 import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
+import com.kudigo.mobile_money_util.R
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     private var paymentCallbackInterface: PaymentCallbackInterface? = null
-    private var paymentInfo: PaymentInfo? = null
+    private var paymentInfo: MoMoPaymentInfo? = null
     private var paymentInterface: PaymentCallbackInterface? = null
     private var activityCalling: Activity? = null
 
@@ -35,7 +38,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     }
 
-    fun paymentRequest(paymentInfo: PaymentInfo) {
+    fun paymentRequest(paymentInfo: MoMoPaymentInfo) {
         //do request here
     }
 
@@ -67,7 +70,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     companion object {
-        fun newInstance(activity: Activity, paymentInfo: PaymentInfo? = null, callback: PaymentCallbackInterface) =
+        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null, callback: PaymentCallbackInterface) =
             BottomSheetPaymentProcessor().apply {
                 this.activityCalling = activity
                 this.paymentInfo = paymentInfo

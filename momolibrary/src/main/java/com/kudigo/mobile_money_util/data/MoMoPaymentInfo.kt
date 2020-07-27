@@ -1,6 +1,6 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.data
 
-open class PaymentInfo(
+open class MoMoPaymentInfo(
     var id: String = "",
     var name: String = "",
     var network: String = "",
@@ -9,5 +9,4 @@ open class PaymentInfo(
     var status: String = "",
     var voucherCode: String = "",
     var amountPaid: Double = 0.0
-
 )
