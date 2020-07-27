@@ -2,8 +2,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.kudigo.mobile_money_util">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application>
-        <activity android:name=".MainActivity"></activity>
+        <activity
+            android:name="com.kudigo.mobile_money_util.BottomSheetPaymentProcessor"
+            android:label="@string/title_activity_bottom_sheet_payment_processor"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name="com.kudigo.mobile_money_util.MainActivity" />
     </application>
 
 </manifest>

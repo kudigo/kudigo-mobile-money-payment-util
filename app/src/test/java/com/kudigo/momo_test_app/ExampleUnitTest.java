@@ -1,4 +1,4 @@
-package com.kudigo.mobile_money_util;
+package com.kudigo.momo_test_app;
 
 import org.junit.Test;
 
