@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_horizontal_margin_medium">24dp</dimen>
+    <dimen name="activity_horizontal_hint_margin">16dp</dimen>
+    <dimen name="margin_small">8dp</dimen>
+    <dimen name="search_margin">12dp</dimen>
+    <dimen name="divider_height">2dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="activity_splash_margin_ship">54dp</dimen>
+    <dimen name="activity_splash_margin">50dp</dimen>
+    <dimen name="welcome_toolbar_image_width">300dp</dimen>
+    <dimen name="welcome_toolbar_image_height">100dp</dimen>
+    <dimen name="edit_horizontal_margin">32dp</dimen>
+    <dimen name="report_header_action_height">25dp</dimen>
+    <dimen name="order_item_image_width">100dp</dimen>
+
+    <dimen name="negative_item_margin">-2dp</dimen>
+    <dimen name="card_elevation">1dp</dimen>
+    <dimen name="spinner_margin">10dp</dimen>
+
+    <dimen name="button_radius_toggle">0dp</dimen>
+    <dimen name="button_outline_width">0.5dp</dimen>
+    <dimen name="bar_elevation">0dp</dimen>
+    <dimen name="main_bar_elevation">6dp</dimen>
+    <dimen name="avatar_edge">4dp</dimen>
+    <dimen name="avatar_width">80dp</dimen>
+    <dimen name="avatar_small_width">30dp</dimen>
+    <dimen name="order_avatar_width">120dp</dimen>
+    <dimen name="product_height">150dp</dimen>
+
+    <dimen name="home_icon">100dp</dimen>
+    <dimen name="drawer_width_small">300dp</dimen>
+    <dimen name="progress_height">4dp</dimen>
+
+    <dimen name="badge_text">8sp</dimen>
+    <dimen name="spinner_margin_inner">6dp</dimen>
+
+    <dimen name="slim_button_height">20dp</dimen>
+    <dimen name="medium_button_height">30dp</dimen>
+
+    <dimen name="pay_icon">50dp</dimen>
+    <dimen name="pay_item_row_height">100dp</dimen>
+    <dimen name="pay_item_width">120dp</dimen>
+    <dimen name="pay_icon_processing">50dp</dimen>
+
+    <dimen name="button_radius">2dp</dimen>
+    <dimen name="button_height">44dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="coordinate_activity_bottom_margin">50dp</dimen>
+    <dimen name="data_text_size">10sp</dimen>
+    <dimen name="card_radius">0dp</dimen>
+    <dimen name="date_time_size">10sp</dimen>
+    <dimen name="small_icon_size">25dp</dimen>
+    <dimen name="more_icon_height">16dp</dimen>
+
+    <dimen name="settings_drawable_padding">10dp</dimen>
+    <dimen name="settings_item_top_margin">1dp</dimen>
+    <dimen name="feed_left_item_width">120dp</dimen>
+
+    <dimen name="shimmer_placeholder_image">80dp</dimen>
+    <dimen name="shimmer_placeholder_text_height">16dp</dimen>
+    <dimen name="product_image_size">100dp</dimen>
+    <dimen name="toolbar_shadow_height">1dp</dimen>
+    <dimen name="filter_text_size">10sp</dimen>
+
+
+</resources>

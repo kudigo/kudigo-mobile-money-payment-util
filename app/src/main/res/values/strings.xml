@@ -9,5 +9,4 @@
     <string name="done">DONE</string>
     <string name="cancel">CANCEL</string>
     <string name="retry">RETRY</string>
-    <string name="change_network">CHANGE</string>
 </resources>
