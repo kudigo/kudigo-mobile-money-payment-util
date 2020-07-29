@@ -28,6 +28,8 @@ class MakePayment(private var context: AppCompatActivity) {
             return
         }
 
+        paymentRequest(paymentInfo)
+
 
         val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
