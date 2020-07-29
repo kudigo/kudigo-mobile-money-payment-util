@@ -9,19 +9,12 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-<<<<<<< HEAD
-    val amount: Double = 0.0
-    val error:String = "You do not have internet connection"
-    val paymentInfo = PaymentInfo(
-=======
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         val paymentInfo = MoMoPaymentInfo(
->>>>>>> dd13ab506c6f693064c1bed483e916ac0dfe6bd3
             id = "1",
             name = "Jay",
             network = "MTN",
@@ -33,11 +26,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         buttonPay.setOnClickListener {
-<<<<<<< HEAD
-            MakePayment(this).showMoMoPaymentProcessor(paymentInfo, amount,error, object : PaymentCallbackInterface {
-=======
             MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : PaymentCallbackInterface {
->>>>>>> dd13ab506c6f693064c1bed483e916ac0dfe6bd3
                 override fun onSuccess(network: String, number: String) {
                     TODO("Not yet implemented")
                 }

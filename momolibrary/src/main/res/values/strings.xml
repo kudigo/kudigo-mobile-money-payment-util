@@ -7,15 +7,11 @@
     <string name="order_no">Order No.:</string>
     <string name="momo_authorization_message">An authorization request is sent to the customer\'s phone. Entreat the customer to complete it.</string>
     <string name="done">DONE</string>
+    <string name="done_">Done</string>
     <string name="cancel">CANCEL</string>
-<<<<<<< HEAD
     <string name="change">CHANGE</string>
-    <string name="title_activity_bottom_sheet_payment_processor">BottomSheetPaymentProcessor
-    </string>
-=======
     <string name="retry">RETRY</string>
     <string name="title_activity_bottom_sheet_payment_processor">BottomSheetPaymentProcessor</string>
->>>>>>> dd13ab506c6f693064c1bed483e916ac0dfe6bd3
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>

@@ -10,6 +10,9 @@ interface ApiUrls{
     @Headers("Content-Type: application/json")
     @POST("payment")
     fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
+
+    @POST("retry_payment")
+    fun retryPayment(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
     
     @GET("payment_status")
     fun checkPaymentStatus(@Query("transactionId") transactionId:String): Call<TransactionItem>

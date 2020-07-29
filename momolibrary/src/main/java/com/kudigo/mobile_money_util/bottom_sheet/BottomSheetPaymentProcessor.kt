@@ -1,25 +1,28 @@
 package com.kudigo.mobile_money_util.bottom_sheet
 
+import android.R
 import android.app.Activity
 import android.content.DialogInterface
 import android.os.Bundle
+import android.text.InputType
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.kudigo.mobile_money_util.*
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.input.input
+import com.kudigo.mobile_money_util.PaymentStatus
 import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 import com.kudigo.mobile_money_util.data.TransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
-
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
@@ -36,6 +39,8 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        checkPaymentStatus()
+
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
 
@@ -43,8 +48,12 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         buttonCancel.setOnClickListener {
             cancelTransaction()
         }
-        buttonOptions.setOnClickListener {
+        buttonChange.setOnClickListener {
             changeNetwork()
+        }
+
+        buttonOptions.setOnClickListener {
+            retryMomoTransaction(paymentInfo!!)
         }
 
     }
@@ -83,10 +92,11 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setSingleChoiceItems(networkOptions, selectedOption, DialogInterface.OnClickListener { dialog, which ->
             selectedOption = which
             Toast.makeText(activityCalling, networkOptions[which], Toast.LENGTH_SHORT).show()
+            enterNumber()
 
         })
 
-        builder.setPositiveButton("RETRY") { dialog, which ->
+        builder.setPositiveButton("Continue") { dialog, which ->
 
             dialog.dismiss()
         }
@@ -105,28 +115,15 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     //FIX
     fun acceptInputDialog(title: String, message: String, hint: String) {
-        val context = this
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle(title)
-        builder.setMessage(message)
-
-        val view = layoutInflater.inflate(R.layout.dialog_accept_input, null)
-
-        val editText = view.findViewById(R.id.edittextInput) as EditText
-        editText.setHint(hint)
-
-        builder.setView(view);
-
-        builder.setPositiveButton("Done") { dialog, p1 ->
-            val textValue = editText.text.toString()
-
+        MaterialDialog(activityCalling!!).show {
+            title(text=title)
+            message(text=message)
+            input(hint= hint,waitForPositiveButton = false) { dialog, text ->
+                // Text changed
+            }
+            positiveButton(R.string.done)
         }
 
-        builder.setNegativeButton(android.R.string.cancel) { dialog, p1 ->
-            dialog.cancel()
-        }
-
-        builder.show();
     }
 
 
@@ -138,6 +135,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     private fun cancelTransaction() {
         dismiss()
+        paymentCallbackInterface?.onReceivedData(paymentInfo!!, "Transaction cancelled")
     }
 
 
@@ -148,6 +146,33 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         paymentProgress.visibility = View.GONE
         textViewMessage.text = message
         textViewMessage.setTextColor(requireActivity().resources!!.getColor(R.color.colorRed))
+    }
+
+    private fun retryMomoTransaction(paymentInfo: MoMoPaymentInfo){
+        val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
+        retrofit.retryPayment(paymentInfo).enqueue(
+                object : Callback<MoMoPaymentInfo> {
+                    override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
+                        Toast.makeText(context,"" + t,Toast.LENGTH_SHORT).show()
+
+                        paymentProgress.visibility = View.GONE
+                        textViewMessage.text = t.toString()
+                        buttonOptions.visibility = View.VISIBLE
+                    }
+
+                    override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
+                        val result = response.body()
+                        Toast.makeText(context,"" + result,Toast.LENGTH_SHORT).show()
+
+                        paymentProgress.visibility = View.GONE
+                        textViewMessage.text = response.message()
+                        buttonOptions.visibility = View.VISIBLE
+                        buttonMobileMoneyAction.visibility = View.VISIBLE
+
+
+                    }
+                }
+        )
     }
 
     companion object {
