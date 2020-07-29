@@ -6,6 +6,13 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
+    def localProperties = new Properties()
+    localProperties.load(new FileInputStream(rootProject.file("local.properties")))
+
+    def baseUrl = localProperties["baseUrl"]
+    def baseUrlTest = localProperties["baseUrlTest"]
+
+
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 29
@@ -20,6 +27,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "BASE_URL", baseUrl
+        }
+        debug {
+            buildConfigField "String", "BASE_URL", baseUrlTest
         }
     }
     compileOptions {
@@ -39,8 +50,13 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     implementation "com.google.android.material:material:1.1.0"
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.1.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.1.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.3.0'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:converter-gson:2.5.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.5.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'

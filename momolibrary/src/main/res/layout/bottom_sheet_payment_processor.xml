@@ -176,7 +176,7 @@
             android:layout_toEndOf="@+id/buttonCancel"
             android:layout_toRightOf="@+id/buttonCancel"
             android:fontFamily="@font/brown_thin"
-            android:text="@string/retry" />
+            android:text= "@string/change" />
 
 
     </RelativeLayout>
