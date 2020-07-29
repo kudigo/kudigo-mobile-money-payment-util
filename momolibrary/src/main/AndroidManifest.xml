@@ -3,6 +3,7 @@
     package="com.kudigo.mobile_money_util">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <application>
         <activity
             android:name="com.kudigo.mobile_money_util.BottomSheetPaymentProcessor"
