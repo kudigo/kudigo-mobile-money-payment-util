@@ -1,7 +1,6 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.bottom_sheet
 
 import android.app.Activity
-import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,7 +9,13 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import com.google.android.material.dialog.MaterialDialogs
+import com.kudigo.mobile_money_util.*
+import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
+import com.kudigo.mobile_money_util.data.TransactionItem
+import com.kudigo.mobile_money_util.retrofit.ApiUrls
+import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
+
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
 import retrofit2.Call
 import retrofit2.Callback
@@ -19,12 +24,10 @@ import retrofit2.Response
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     private var paymentCallbackInterface: PaymentCallbackInterface? = null
-    private var paymentInfo: PaymentInfo? = null
-    private var amount: Double = 0.00
+    private var paymentInfo: MoMoPaymentInfo? = null
     private var paymentInterface: PaymentCallbackInterface? = null
     private var activityCalling: Activity? = null
     private val networkOptions = arrayOf("MTN", "VODAFONE", "AIRTEL", "TIGO")
-
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.bottom_sheet_payment_processor, container, false)
@@ -33,10 +36,9 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        checkPaymentStatus()
-
         buttonMobileMoneyAction.setOnClickListener {
-            transactionFinished(paymentInfo!!.network,paymentInfo!!.number)
+            transactionFinished()
+
         }
         buttonCancel.setOnClickListener {
             cancelTransaction()
@@ -60,7 +62,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                     override fun onResponse(call: Call<TransactionItem>, response: Response<TransactionItem>) {
                         val result = response.body()
                         if(response.body()?.transactionStatus==PaymentStatus.SUCCESS.name){
-                            paymentInfo?.status=PaymentStatus.SUCCESS.name
+                            paymentInfo?.status= PaymentStatus.SUCCESS.name
                             buttonOptions.visibility = View.GONE
                             paymentProgress.visibility = View.GONE
                             textViewMessage.text = "Transaction successful"
@@ -96,7 +98,10 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     //enter number to retry
     fun enterNumber() {
         acceptInputDialog("Retry Transaction", "Enter customer number or different number to try again.", "Customer Phone Number")
+
+
     }
+
 
     //FIX
     fun acceptInputDialog(title: String, message: String, hint: String) {
@@ -125,9 +130,10 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     }
 
 
-    private fun transactionFinished(network: String, number: String) {
+    private fun transactionFinished() {
         dismiss()
-        paymentCallbackInterface?.onSuccess(network,number)
+
+        paymentCallbackInterface?.onSuccess(paymentInfo!!.network, paymentInfo!!.number)
 
     }
 
@@ -146,13 +152,12 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     }
 
     companion object {
-        fun newInstance(activity: Activity, amount: Double, paymentInfo: PaymentInfo? = null, callback: PaymentCallbackInterface) =
-                BottomSheetPaymentProcessor().apply {
-                    this.activityCalling = activity
-                    this.paymentInfo = paymentInfo
-                    this.amount = amount
-                    this.paymentInterface = callback
-                }
+        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null, callback: PaymentCallbackInterface) =
+            BottomSheetPaymentProcessor().apply {
+                this.activityCalling = activity
+                this.paymentInfo = paymentInfo
+                this.paymentInterface = callback
+            }
     }
 
 

@@ -1,8 +1,9 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.data
 
 import com.google.gson.annotations.SerializedName
 
-open class PaymentInfo(
+
+open class MoMoPaymentInfo(
     @SerializedName("id")
     var id: String = "",
     @SerializedName("name")
@@ -19,5 +20,4 @@ open class PaymentInfo(
     var voucherCode: String = "",
     @SerializedName("amount")
     var amountPaid: Double = 0.0
-
 )

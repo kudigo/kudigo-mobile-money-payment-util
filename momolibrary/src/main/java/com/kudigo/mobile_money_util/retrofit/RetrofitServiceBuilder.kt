@@ -1,4 +1,4 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.retrofit
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

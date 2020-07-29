@@ -1,4 +1,4 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.data
 
 import com.google.gson.annotations.SerializedName
 

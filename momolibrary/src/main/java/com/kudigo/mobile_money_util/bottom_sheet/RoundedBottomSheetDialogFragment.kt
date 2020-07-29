@@ -1,4 +1,4 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.bottom_sheet
 
 import android.app.Dialog
 import android.content.DialogInterface
@@ -8,6 +8,7 @@ import android.widget.FrameLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.kudigo.mobile_money_util.R
 
 
 /**

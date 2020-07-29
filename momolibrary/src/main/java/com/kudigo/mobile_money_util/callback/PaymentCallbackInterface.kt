@@ -1,4 +1,4 @@
-package com.kudigo.mobile_money_util
+package com.kudigo.mobile_money_util.callback
 
 interface PaymentCallbackInterface {
     fun onSuccess(network: String, number:String)

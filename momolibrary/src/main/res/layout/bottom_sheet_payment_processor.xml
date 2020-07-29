@@ -13,22 +13,34 @@
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
-
         <TextView
             android:id="@+id/texViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
             android:layout_gravity="center_vertical"
             android:fontFamily="@font/brown_thin"
             android:gravity="center"
             android:text="@string/kudigo_storefront_payment"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonChange"
+            style="@style/MaterialTextButtonOutlineStyle"
+            android:layout_width="100dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:fontFamily="@font/brown_thin"
+            android:text="@string/change_network"
+            android:textColor="@color/colorLightDark" />
+
         <View
             android:id="@+id/viewDivider"
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:layout_below="@+id/texViewTitle"
+            android:layout_below="@+id/buttonChange"
             android:layout_marginTop="@dimen/margin_small"
             android:background="@color/gray" />
 
@@ -53,7 +65,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="@dimen/divider_height"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_toEndOf="@+id/imageViewGetWayIcon"
             android:layout_toRightOf="@+id/imageViewGetWayIcon"
             android:fontFamily="@font/brown_regular"
