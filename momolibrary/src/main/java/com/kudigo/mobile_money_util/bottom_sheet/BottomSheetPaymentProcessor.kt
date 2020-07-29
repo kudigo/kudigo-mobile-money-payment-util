@@ -132,7 +132,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     private fun transactionFinished() {
         dismiss()
-
         paymentCallbackInterface?.onSuccess(paymentInfo!!.network, paymentInfo!!.number)
 
     }
