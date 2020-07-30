@@ -6,7 +6,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
-
     </style>
 
     <!--  style for the material button outlined-->
@@ -20,15 +19,6 @@
         <item name="cornerRadius">@dimen/button_radius</item>
         <item name="android:textColor">@drawable/primary_outline_button_states</item>
     </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
-    </style>
-
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- set the rounded drawable as background to your bottom sheet -->
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
@@ -50,5 +40,31 @@
         <item name="colorControlNormal">@color/colorLightDark</item>
     </style>
 
+    <style name="MaterialTextBoxStyleOutline" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="android:insetBottom">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:bottomLeftRadius">0dp</item>
+        <item name="android:bottomRightRadius">0dp</item>
+        <item name="android:topLeftRadius">0dp</item>
+        <item name="android:topRightRadius">0dp</item>
+        <item name="boxCornerRadiusBottomEnd">0dp</item>
+        <item name="boxCornerRadiusBottomStart">0dp</item>
+        <item name="boxCornerRadiusTopEnd">0dp</item>
+        <item name="boxCornerRadiusTopStart">0dp</item>
+        <item name="boxCollapsedPaddingTop">0dp</item>
+        <item name="boxStrokeWidth">1dp</item>
+        <item name="boxStrokeColor">@color/colorLightDark</item>
+        <item name="boxStrokeWidthFocused">1dp</item>
+        <item name="boxBackgroundColor">@color/colorWhite</item>
+        <item name="android:textColorHint">@color/colorLightDark</item>
+        <item name="hintTextColor">@color/colorLightDark</item>
+        <item name="android:textColor">@color/colorLightDark</item>
+        <item name="colorControlNormal">@color/colorLightDark</item>
+        <item name="colorControlActivated">@color/colorPrimary</item>
+        <item name="colorControlHighlight">@color/colorPrimary</item>
+        <item name="endIconTint">@color/colorLightDark</item>
+    </style>
 
 </resources>
