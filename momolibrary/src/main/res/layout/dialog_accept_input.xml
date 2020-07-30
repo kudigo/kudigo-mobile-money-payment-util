@@ -9,8 +9,8 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/textInputLayoutInput"
-        android:layout_width="match_parent"
         style="@style/MaterialTextBoxStyleOutline"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/activity_horizontal_margin">
 
@@ -18,13 +18,13 @@
             android:id="@+id/edittextInput"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/brown_thin"
-            android:inputType="phone"
             android:layout_gravity="center"
+            android:fontFamily="@font/brown_thin"
             android:gravity="center"
-            android:padding="@dimen/activity_horizontal_margin"
+            android:hint="@string/enter_phone_number"
+            android:inputType="phone"
             android:maxLines="1"
-            android:hint="Enter phone number"
+            android:padding="@dimen/activity_horizontal_margin"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     </com.google.android.material.textfield.TextInputLayout>
