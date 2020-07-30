@@ -31,6 +31,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var paymentInterface: PaymentCallbackInterface? = null
     private var activityCalling: Activity? = null
     private val networkOptions = arrayOf("MTN", "VODAFONE", "AIRTEL", "TIGO")
+    private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.bottom_sheet_payment_processor, container, false)
@@ -56,42 +57,47 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             retryMomoTransaction(paymentInfo!!)
         }
 
+
+        paymentInfo?.let {
+            paymentProgress.visibility = View.VISIBLE
+            retrofit.paymentRequest(it)
+        }
+
     }
 
 
-    fun checkPaymentStatus(){
-        val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
+    fun checkPaymentStatus() {
         retrofit.checkPaymentStatus(paymentInfo!!.id).enqueue(
-                object : Callback<TransactionItem> {
-                    override fun onFailure(call: Call<TransactionItem>, t: Throwable) {
-                        transactionFailed(t.toString())
-
-                    }
-
-                    override fun onResponse(call: Call<TransactionItem>, response: Response<TransactionItem>) {
-                        val result = response.body()
-                        if(response.body()?.transactionStatus==PaymentStatus.SUCCESS.name){
-                            paymentInfo?.status= PaymentStatus.SUCCESS.name
-                            buttonOptions.visibility = View.GONE
-                            paymentProgress.visibility = View.GONE
-                            textViewMessage.text = "Transaction successful"
-                            textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
-                        }
-                        Toast.makeText(context,"" + result,Toast.LENGTH_SHORT).show()
-                    }
+            object : Callback<TransactionItem> {
+                override fun onFailure(call: Call<TransactionItem>, t: Throwable) {
+                    transactionFailed(t.toString())
                 }
+
+                override fun onResponse(call: Call<TransactionItem>, response: Response<TransactionItem>) {
+                    val result = response.body()
+                    if (response.body()?.transactionStatus == PaymentStatus.SUCCESS.name) {
+                        paymentInfo?.status = PaymentStatus.SUCCESS.name
+                        buttonOptions.visibility = View.GONE
+                        paymentProgress.visibility = View.GONE
+                        textViewMessage.text = "Transaction successful"
+                        textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
+                    }
+                    Toast.makeText(context, "" + result, Toast.LENGTH_SHORT).show()
+                }
+            }
         )
     }
 
 
     //retry with another network
-    fun changeNetwork() {
+    private fun changeNetwork() {
         var selectedOption = 0
         val builder = AlertDialog.Builder(activityCalling!!)
         builder.setTitle("Choose Another Network")
         builder.setSingleChoiceItems(networkOptions, selectedOption, DialogInterface.OnClickListener { dialog, which ->
             selectedOption = which
             Toast.makeText(activityCalling, networkOptions[which], Toast.LENGTH_SHORT).show()
+
             enterNumber()
 
         })
@@ -130,7 +136,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private fun transactionFinished() {
         dismiss()
         paymentCallbackInterface?.onSuccess(paymentInfo!!.network, paymentInfo!!.number)
-
     }
 
     private fun cancelTransaction() {
