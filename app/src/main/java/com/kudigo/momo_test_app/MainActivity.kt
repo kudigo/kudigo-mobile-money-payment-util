@@ -43,6 +43,10 @@ class MainActivity : AppCompatActivity() {
                     TODO("Not yet implemented")
                 }
 
+                override fun onReceivedData(moMoPaymentInfo: MoMoPaymentInfo, cancelMessage: String) {
+                    TODO("Not yet implemented")
+                }
+
             })
         }
     }
