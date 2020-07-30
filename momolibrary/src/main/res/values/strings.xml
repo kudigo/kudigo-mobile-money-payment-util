@@ -9,8 +9,18 @@
     <string name="done">DONE</string>
     <string name="done_">Done</string>
     <string name="cancel">CANCEL</string>
-    <string name="change">CHANGE</string>
+    <string name="change_network">CHANGE</string>
     <string name="retry">RETRY</string>
     <string name="title_activity_bottom_sheet_payment_processor">BottomSheetPaymentProcessor</string>
+    <string name="continue_">Continue</string>
+    <string name="enter_customer_number_or_different_number">Enter customer phone number or different number to try transaction again</string>
+    <string name="customer_phone_number">Customer phone number</string>
+    <string name="retry_payment_transaction">Retry Payment Transaction</string>
+    <string name="enter_voucher_code_vodafone_cash">Enter voucher code provided by customer to initiate Vodafone Cash payment.</string>
+    <string name="voucher_code">Voucher Code</string>
+    <string name="transaction_cancelled">Transaction cancelled</string>
+    <string name="continue_with_another_network">Choose Another Network</string>
+    <string name="transaction_successful">Transaction successful</string>
+    <string name="order_amount_charge">Order #:\nAmount:\nCharge:</string>
 
 </resources>

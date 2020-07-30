@@ -17,8 +17,7 @@ class MakePayment(private var context: AppCompatActivity) {
     private var callBack: PaymentCallbackInterface? = null
     private var tag = "PAYMENT_HANDLER"
 
-    // Show MOMO processor
-
+    //start momo processor
     fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: PaymentCallbackInterface) {
         this.callBack = paymentCallbackInterface
 
@@ -28,30 +27,12 @@ class MakePayment(private var context: AppCompatActivity) {
             return
         }
 
-        paymentRequest(paymentInfo)
-
-
         val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
         bottomSheetMoMoPaymentStatus.show(context.supportFragmentManager, tag)
     }
 
-    fun paymentRequest(paymentInfo: MoMoPaymentInfo) {
-        val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
-        retrofit.paymentRequest(paymentInfo).enqueue(
-                object : Callback<MoMoPaymentInfo> {
-                    override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
-                        Toast.makeText(context,"" + t,Toast.LENGTH_SHORT).show()
 
-                    }
-
-                    override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
-                        val result = response.body()
-                        Toast.makeText(context,"" + result,Toast.LENGTH_SHORT).show()
-                    }
-                }
-        )
-    }
 
 
 }

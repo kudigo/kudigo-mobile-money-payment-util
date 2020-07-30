@@ -8,12 +8,12 @@ import retrofit2.http.*
 interface ApiUrls{
 
     @Headers("Content-Type: application/json")
-    @POST("payment")
+    @POST("retry_momo_transaction/")
     fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
 
-    @POST("retry_payment")
+    @POST("retry_momo_transaction/")
     fun retryPayment(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
     
-    @GET("payment_status")
+    @GET("check_momo_status/")
     fun checkPaymentStatus(@Query("transactionId") transactionId:String): Call<TransactionItem>
 }

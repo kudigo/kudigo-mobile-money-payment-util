@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.net.ConnectivityManager
+import java.math.BigDecimal
 
 class Utility {
 
@@ -14,6 +15,18 @@ class Utility {
     }
 
 
+
+    fun round(value: Double?, numberOfDigitsAfterDecimalPoint: Int): String {
+        if (value == null) {
+            return value.toString()
+        }
+        var bigDecimal = BigDecimal(value)
+        bigDecimal = bigDecimal.setScale(
+                numberOfDigitsAfterDecimalPoint,
+                BigDecimal.ROUND_HALF_UP
+        )
+        return bigDecimal.toPlainString()
+    }
 
 
 }
