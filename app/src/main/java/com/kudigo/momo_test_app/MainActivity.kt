@@ -10,6 +10,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
+    var amount: Double = 20.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -22,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         buttonPay.setOnClickListener {
-            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : MoMoPaymentCallbackInterface {
+            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, amount,null, object : MoMoPaymentCallbackInterface {
                 override fun onSuccess(network: String, number: String) {
                     TODO("Not yet implemented")
                 }
