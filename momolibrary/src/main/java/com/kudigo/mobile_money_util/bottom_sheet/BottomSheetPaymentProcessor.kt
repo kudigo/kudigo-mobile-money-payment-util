@@ -122,7 +122,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
 
             enterNumber()
-          // showPaymentIcon()
+           showPaymentIcon()
 
         }
         builder.show()
