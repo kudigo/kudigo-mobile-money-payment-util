@@ -24,23 +24,23 @@ class MainActivity : AppCompatActivity() {
         buttonPay.setOnClickListener {
             MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : MoMoPaymentCallbackInterface {
                 override fun onSuccess(network: String, number: String) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onFailed(reason: String) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onCancelled() {
-                    TODO("Not yet implemented")
+
                 }
 
-                override fun onReceivedError(message: String) {
-                    TODO("Not yet implemented")
+                override fun onReceivedError(errorMessage: String) {
+
                 }
 
                 override fun onReceivedData(moMoPaymentInfo: MoMoPaymentInfo, cancelMessage: String) {
-                    TODO("Not yet implemented")
+
                 }
 
             })
