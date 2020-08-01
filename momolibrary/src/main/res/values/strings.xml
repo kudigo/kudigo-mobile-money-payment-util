@@ -12,13 +12,7 @@
     <string name="change_network">CHANGE</string>
     <string name="retry">RETRY</string>
     <string name="title_activity_bottom_sheet_payment_processor">BottomSheetPaymentProcessor</string>
-<<<<<<< HEAD
-    <!-- Strings used for fragments for navigation -->
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-    <string name="change_network">CHANGE</string>
-    <string name="enter_phone_number">Enter Phone Number</string>
-=======
+
     <string name="continue_">Continue</string>
     <string name="enter_customer_number_or_different_number">Enter customer phone number or different number to try transaction again</string>
     <string name="customer_phone_number">Customer phone number</string>
@@ -29,6 +23,6 @@
     <string name="continue_with_another_network">Choose Another Network</string>
     <string name="transaction_successful">Transaction successful</string>
     <string name="order_amount_charge">Order #:\nAmount:\nCharge:</string>
->>>>>>> 6954c655bf4f11c613a604151591e2810f3d428a
+
 
 </resources>

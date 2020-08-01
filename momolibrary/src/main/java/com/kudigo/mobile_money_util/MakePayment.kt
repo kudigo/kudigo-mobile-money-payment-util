@@ -12,7 +12,7 @@ class MakePayment(private var context: AppCompatActivity) {
     private var tag = "PAYMENT_HANDLER"
 
     //start momo processor
-    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: MoMoPaymentCallbackInterface) {
+    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, amount:Double, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: MoMoPaymentCallbackInterface) {
         this.callBack = paymentCallbackInterface
 
         // MARK: internet connection not available
@@ -21,7 +21,7 @@ class MakePayment(private var context: AppCompatActivity) {
             return
         }
 
-        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, paymentCallbackInterface)
+        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, amount,paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
         bottomSheetMoMoPaymentStatus.show(context.supportFragmentManager, tag)
     }

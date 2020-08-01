@@ -35,6 +35,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
+    private var amount:Double = 0.0
     private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
 
@@ -112,7 +113,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
             enterNumber()
             showPaymentIcon()
-            dialog.dismiss()
+
         }
         builder.show()
     }
@@ -235,6 +236,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         paymentProgress.visibility = View.GONE
         buttonCancel.visibility = View.INVISIBLE
         textViewMessage.visibility = View.VISIBLE
+
         paymentRequest(paymentInfo!!)
     }
 
@@ -272,11 +274,12 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     companion object {
-        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null, callback: MoMoPaymentCallbackInterface) =
+        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null,amount:Double, callback: MoMoPaymentCallbackInterface) =
             BottomSheetPaymentProcessor().apply {
                 this.activityCalling = activity
                 this.paymentInfo = paymentInfo
                 this.paymentInterface = callback
+                this.amount = amount
             }
     }
 }
