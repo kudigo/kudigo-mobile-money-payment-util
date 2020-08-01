@@ -3,7 +3,7 @@ package com.kudigo.momo_test_app
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.kudigo.mobile_money_util.MakePayment
-import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,7 +18,7 @@ class MainActivity : AppCompatActivity() {
             id = "1",
             name = "Jay",
             network = "MTN",
-            number = "0244999999",
+            number = "0249668268",
             reference = "0987",
             status = "",
             voucherCode = "",
@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         buttonPay.setOnClickListener {
-            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : PaymentCallbackInterface {
+            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, null, object : MoMoPaymentCallbackInterface {
                 override fun onSuccess(network: String, number: String) {
                     TODO("Not yet implemented")
                 }
@@ -40,6 +40,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 override fun onReceivedError(message: String) {
+                    TODO("Not yet implemented")
+                }
+
+                override fun onReceivedData(moMoPaymentInfo: MoMoPaymentInfo, cancelMessage: String) {
                     TODO("Not yet implemented")
                 }
 

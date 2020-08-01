@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/tools"
     android:id="@+id/bottomSheet"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -17,10 +18,13 @@
             android:id="@+id/texViewTitle"
             android:layout_width="wrap_content"
             android:layout_height="30dp"
-            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_gravity="center_vertical"
+            android:layout_toStartOf="@+id/buttonChange"
+            android:layout_toLeftOf="@+id/buttonChange"
             android:fontFamily="@font/brown_thin"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="@string/kudigo_storefront_payment"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -40,39 +44,46 @@
             android:id="@+id/viewDivider"
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
-            android:layout_below="@+id/buttonChange"
+            android:layout_below="@+id/texViewTitle"
             android:layout_marginTop="@dimen/margin_small"
             android:background="@color/gray" />
 
 
-        <ImageView
-            android:id="@+id/imageViewGetWayIcon"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewImageViewIcon"
             android:layout_width="@dimen/pay_icon_processing"
             android:layout_height="@dimen/pay_icon_processing"
             android:layout_below="@+id/viewDivider"
             android:layout_marginTop="@dimen/margin_small"
-            android:background="@drawable/round_grey_bg"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/ic_launcher"
-             />
+            app:cardCornerRadius="25dp"
+            app:cardPreventCornerOverlap="false">
+
+            <ImageView
+                android:id="@+id/imageViewGetWayIcon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/round_grey_bg"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/ic_launcher" />
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <TextView
             android:id="@+id/textViewGateWay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/imageViewGetWayIcon"
+            android:layout_alignTop="@+id/cardViewImageViewIcon"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_marginTop="@dimen/margin_small"
-            android:layout_toEndOf="@+id/imageViewGetWayIcon"
-            android:layout_toRightOf="@+id/imageViewGetWayIcon"
+            android:layout_toEndOf="@+id/cardViewImageViewIcon"
+            android:layout_toRightOf="@+id/cardViewImageViewIcon"
             android:fontFamily="@font/brown_regular"
             android:gravity="center_vertical"
             android:text="@string/mtn_mobile_money"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
-
 
         <TextView
             android:id="@+id/textViewNumber"
@@ -80,13 +91,14 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/textViewGateWay"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/divider_height"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_toEndOf="@+id/imageViewGetWayIcon"
-            android:layout_toRightOf="@+id/imageViewGetWayIcon"
+            android:layout_toEndOf="@+id/cardViewImageViewIcon"
+            android:layout_toRightOf="@+id/cardViewImageViewIcon"
             android:fontFamily="@font/brown_thin"
             android:gravity="center_vertical"
-            android:text="@string/application_name"
+            android:text="@string/app_name"
             android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
 
@@ -94,7 +106,7 @@
             android:id="@+id/textViewOrderLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageViewGetWayIcon"
+            android:layout_below="@+id/cardViewImageViewIcon"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/margin_small"
             android:fontFamily="@font/brown_thin"
@@ -106,7 +118,7 @@
             android:id="@+id/textViewOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/imageViewGetWayIcon"
+            android:layout_below="@+id/cardViewImageViewIcon"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_gravity="center_vertical"
@@ -176,7 +188,7 @@
             android:layout_toEndOf="@+id/buttonCancel"
             android:layout_toRightOf="@+id/buttonCancel"
             android:fontFamily="@font/brown_thin"
-            android:text= "@string/change" />
+            android:text="@string/retry" />
 
 
     </RelativeLayout>

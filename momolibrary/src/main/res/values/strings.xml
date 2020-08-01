@@ -7,18 +7,28 @@
     <string name="order_no">Order No.:</string>
     <string name="momo_authorization_message">An authorization request is sent to the customer\'s phone. Entreat the customer to complete it.</string>
     <string name="done">DONE</string>
+    <string name="done_">Done</string>
     <string name="cancel">CANCEL</string>
-    <string name="change">CHANGE</string>
+    <string name="change_network">CHANGE</string>
     <string name="retry">RETRY</string>
     <string name="title_activity_bottom_sheet_payment_processor">BottomSheetPaymentProcessor</string>
+<<<<<<< HEAD
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="change_network">CHANGE</string>
     <string name="enter_phone_number">Enter Phone Number</string>
+=======
+    <string name="continue_">Continue</string>
+    <string name="enter_customer_number_or_different_number">Enter customer phone number or different number to try transaction again</string>
+    <string name="customer_phone_number">Customer phone number</string>
+    <string name="retry_payment_transaction">Retry Payment Transaction</string>
+    <string name="enter_voucher_code_vodafone_cash">Enter voucher code provided by customer to initiate Vodafone Cash payment.</string>
+    <string name="voucher_code">Voucher Code</string>
+    <string name="transaction_cancelled">Transaction cancelled</string>
+    <string name="continue_with_another_network">Choose Another Network</string>
+    <string name="transaction_successful">Transaction successful</string>
+    <string name="order_amount_charge">Order #:\nAmount:\nCharge:</string>
+>>>>>>> 6954c655bf4f11c613a604151591e2810f3d428a
 
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
 </resources>

@@ -16,8 +16,12 @@ open class MoMoPaymentInfo(
     var reference: String = "",
     @SerializedName("status")
     var status: String = "",
-    @SerializedName("vouchercode")
+    @SerializedName("voucherCode")
     var voucherCode: String = "",
-    @SerializedName("amount")
-    var amountPaid: Double = 0.0
+    @SerializedName("amountPaid")
+    var amountPaid: Double = 0.0,
+    @SerializedName("responseCode")
+    var responseCode: String = "",
+    @SerializedName("responseMessage")
+    var responseMessage: String = ""
 )
