@@ -2,33 +2,33 @@ package com.kudigo.mobile_money_util.data
 
 import com.google.gson.annotations.SerializedName
 
-data class TransactionItem(
+data class MomoTransactionItem(
         @SerializedName("id")
         val id: String,
-        @SerializedName("timeCreated")
+        @SerializedName("time_Created")
         val timeCreated: String,
-        @SerializedName("timeCompleted")
+        @SerializedName("time_Completed")
         val timeCompleted: String,
-        @SerializedName("debitAmt")
+        @SerializedName("debit_Amt")
         val debitAmt: String,
-        @SerializedName("creditAmt")
+        @SerializedName("credit_Amt")
         val creditAmt: String,
         @SerializedName("source")
         val source: String,
         @SerializedName("destination")
         var destination: String,
-        @SerializedName("transactionStatus")
+        @SerializedName("transaction_Status")
         var transactionStatus: String,
         @SerializedName("description")
         var description: String,
         @SerializedName("platform")
         var platform: String,
-        @SerializedName("senderWalletNumber")
+        @SerializedName("sender_Wallet_Number")
         var senderWalletNumber: String,
-        @SerializedName("recipientWalletNumber")
+        @SerializedName("recipient_Wallet_Number")
         var recipientWalletNumber: String,
-        @SerializedName("totalCharge")
+        @SerializedName("total_Charge")
         var totalCharge: String,
-        @SerializedName("transactionId")
+        @SerializedName("transaction_Id")
         var transactionId: String
 )
