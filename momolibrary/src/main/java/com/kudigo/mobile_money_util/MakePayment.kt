@@ -1,24 +1,18 @@
 package com.kudigo.mobile_money_util
 
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import com.kudigo.mobile_money_util.bottom_sheet.BottomSheetPaymentProcessor
-import com.kudigo.mobile_money_util.callback.PaymentCallbackInterface
+import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.data.MoMoPaymentExtraInfo
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.retrofit.ApiUrls
-import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
 
 
 class MakePayment(private var context: AppCompatActivity) {
-    private var callBack: PaymentCallbackInterface? = null
+    private var callBack: MoMoPaymentCallbackInterface? = null
     private var tag = "PAYMENT_HANDLER"
 
     //start momo processor
-    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: PaymentCallbackInterface) {
+    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, amount:Double, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: MoMoPaymentCallbackInterface) {
         this.callBack = paymentCallbackInterface
 
         // MARK: internet connection not available
@@ -27,7 +21,7 @@ class MakePayment(private var context: AppCompatActivity) {
             return
         }
 
-        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, paymentCallbackInterface)
+        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, amount,paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
         bottomSheetMoMoPaymentStatus.show(context.supportFragmentManager, tag)
     }

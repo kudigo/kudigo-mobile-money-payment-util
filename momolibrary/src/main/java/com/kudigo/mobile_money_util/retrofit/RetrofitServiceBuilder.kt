@@ -43,7 +43,4 @@ object ServiceBuilder {
         return retrofit.create(service)
     }
 
-
-
-
 }

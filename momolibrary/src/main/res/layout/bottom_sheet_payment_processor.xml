@@ -14,14 +14,17 @@
         android:orientation="vertical"
         android:padding="@dimen/activity_horizontal_margin">
 
-
         <TextView
             android:id="@+id/texViewTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_gravity="center_vertical"
+            android:layout_toStartOf="@+id/buttonChange"
+            android:layout_toLeftOf="@+id/buttonChange"
             android:fontFamily="@font/brown_thin"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:text="@string/kudigo_storefront_payment"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
@@ -42,18 +45,19 @@
             android:layout_width="match_parent"
             android:layout_height="0.1dp"
             android:layout_below="@+id/texViewTitle"
-            android:layout_marginTop="@dimen/activity_horizontal_margin_medium"
+            android:layout_marginTop="@dimen/margin_small"
             android:background="@color/gray" />
 
 
-        <androidx.cardview.widget.CardView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewImageViewIcon"
             android:layout_width="@dimen/pay_icon_processing"
             android:layout_height="@dimen/pay_icon_processing"
-            android:layout_marginTop="@dimen/margin_small"
             android:layout_below="@+id/viewDivider"
+            android:layout_marginTop="@dimen/margin_small"
             app:cardCornerRadius="25dp"
             app:cardPreventCornerOverlap="false">
+
             <ImageView
                 android:id="@+id/imageViewGetWayIcon"
                 android:layout_width="match_parent"
@@ -61,7 +65,8 @@
                 android:background="@drawable/round_grey_bg"
                 android:scaleType="centerCrop"
                 android:src="@mipmap/ic_launcher" />
-        </androidx.cardview.widget.CardView>
+
+        </com.google.android.material.card.MaterialCardView>
 
 
         <TextView
@@ -72,7 +77,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
-            android:layout_marginTop="@dimen/divider_height"
+            android:layout_marginTop="@dimen/margin_small"
             android:layout_toEndOf="@+id/cardViewImageViewIcon"
             android:layout_toRightOf="@+id/cardViewImageViewIcon"
             android:fontFamily="@font/brown_regular"
@@ -80,13 +85,13 @@
             android:text="@string/mtn_mobile_money"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
-
         <TextView
             android:id="@+id/textViewNumber"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/textViewGateWay"
             android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/divider_height"
             android:layout_marginStart="@dimen/margin_small"
             android:layout_marginLeft="@dimen/margin_small"
             android:layout_toEndOf="@+id/cardViewImageViewIcon"
