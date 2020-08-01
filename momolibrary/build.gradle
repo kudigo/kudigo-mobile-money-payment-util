@@ -11,6 +11,7 @@ android {
 
     def baseUrl = localProperties["baseUrl"]
     def baseUrlTest = localProperties["baseUrlTest"]
+    def apiKey = localProperties["apiKey"]
 
 
     defaultConfig {
@@ -28,9 +29,12 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField "String", "BASE_URL", baseUrl
+            buildConfigField "String", "API_KEY", apiKey
+
         }
         debug {
             buildConfigField "String", "BASE_URL", baseUrlTest
+            buildConfigField "String", "API_KEY", apiKey
         }
     }
     compileOptions {

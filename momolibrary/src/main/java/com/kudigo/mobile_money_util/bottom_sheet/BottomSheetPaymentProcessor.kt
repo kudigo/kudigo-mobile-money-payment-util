@@ -19,7 +19,7 @@ import com.kudigo.mobile_money_util.Utility
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.TransactionItem
+import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
@@ -35,7 +35,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
-    private var amount: Double = 0.00
     private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
 
@@ -46,10 +45,10 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
             cancelTimerAction()
-
         }
         buttonCancel.setOnClickListener {
             cancelTransaction()
@@ -65,14 +64,11 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
         paymentInfo?.let {
             paymentProgress.visibility = View.VISIBLE
-
             val orderLabel = activityCalling!!.getString(R.string.order_amount_charge)
-            val amountRounded = Utility().round(it.amountPaid, 2)
+            val amountRounded = Utility().round(10.0, 2)
             textViewOrderLabel.text = orderLabel
-
             showPaymentIcon()
             paymentRequest(it)
-
         }
 
     }
@@ -80,19 +76,22 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     fun checkPaymentStatus() {
         retrofit.checkPaymentStatus(paymentInfo!!.id).enqueue(
-            object : Callback<TransactionItem> {
-                override fun onFailure(call: Call<TransactionItem>, t: Throwable) {
+            object : Callback<MomoTransactionItem> {
+                override fun onFailure(call: Call<MomoTransactionItem>, t: Throwable) {
                     transactionFailed(t.toString())
                 }
 
-                override fun onResponse(call: Call<TransactionItem>, response: Response<TransactionItem>) {
+                override fun onResponse(call: Call<MomoTransactionItem>, response: Response<MomoTransactionItem>) {
                     val result = response.body()
-                    if (response.body()?.transactionStatus == PaymentStatus.SUCCESS.name) {
+                    if (result?.transactionStatus == PaymentStatus.SUCCESS.name) {
                         paymentInfo?.status = PaymentStatus.SUCCESS.name
                         buttonOptions.visibility = View.GONE
                         paymentProgress.visibility = View.GONE
                         textViewMessage.text = getString(R.string.transaction_successful)
                         textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
+                    } else if (result?.transactionStatus == PaymentStatus.FAILED.name) {
+                        paymentInfo?.status = PaymentStatus.FAILED.name
+                        transactionFailed(response.message())
                     }
                 }
             }
@@ -110,16 +109,12 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             paymentInfo!!.network = networkOptions[selectedOption]
 
         })
-
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
-
             enterNumber()
             showPaymentIcon()
             dialog.dismiss()
         }
         builder.show()
-        dismiss()
-
     }
 
     //enter number to retry
@@ -135,13 +130,11 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             object : MomoResultInterface {
                 override fun onReceivedData(data: String) {
                     paymentInfo!!.number = data
-                    showPaymentIcon()
                     if (paymentInfo!!.network == PaymentNetworks.VODAFONE.name) {
                         enterVodafoneVoucher()
                         return
                     }
-                    //MARK: start request
-                    paymentRequest(paymentInfo!!)
+                    retryMomoTransaction()
                 }
             })
     }
@@ -155,7 +148,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             object : MomoResultInterface {
                 override fun onReceivedData(data: String) {
                     paymentInfo!!.voucherCode = data
-                    paymentRequest(paymentInfo!!)
+                    retryMomoTransaction()
                 }
             })
     }
@@ -213,22 +206,39 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         retrofit.paymentRequest(paymentInfo).enqueue(
             object : Callback<MoMoPaymentInfo> {
                 override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
-
+                    if (paymentProgress != null && textViewMessage != null && buttonOptions != null) {
+                        paymentProgress.visibility = View.GONE
+                        textViewMessage.text = t.toString()
+                        buttonOptions.visibility = View.VISIBLE
+                        buttonChange.visibility = View.VISIBLE
+                    }
                 }
+
                 override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
                     val result = response.body()
                     if (response.isSuccessful) {
                         Log.e("response", "success")
+                        if (paymentProgress != null && textViewMessage != null && buttonOptions != null) {
+                            paymentProgress.visibility = View.GONE
+                            textViewMessage.text = response.message()
+                            buttonMobileMoneyAction.visibility = View.VISIBLE
 
-                        updatePaymentStatus()
+                            updatePaymentStatus()
+                        }
                     }
-
                 }
-            }
-        )
+            })
     }
 
-    // timer checking status
+    private fun retryMomoTransaction() {
+        buttonOptions.visibility = View.GONE
+        paymentProgress.visibility = View.GONE
+        buttonCancel.visibility = View.INVISIBLE
+        textViewMessage.visibility = View.VISIBLE
+        paymentRequest(paymentInfo!!)
+    }
+
+
     private fun updatePaymentStatus() {
         timer = object : CountDownTimer(time, 10000) {
             override fun onTick(millisUntilFinished: Long) {
@@ -243,15 +253,17 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     private fun showPaymentIcon() {
-        textViewGateWay.text = paymentInfo?.network
-        textViewNumber.text = paymentInfo?.number
-        var imageIcon = R.drawable.ic_mtn_money
-        when (paymentInfo?.network) {
-            PaymentNetworks.VODAFONE.name -> imageIcon = R.drawable.ic_vodafone_cash
-            PaymentNetworks.AIRTEL.name -> imageIcon = R.drawable.ic_airtel_money
-            PaymentNetworks.TIGO.name -> imageIcon = R.drawable.ic_tigo_cash
+        if (textViewGateWay != null && textViewNumber != null) {
+            textViewGateWay.text = "${paymentInfo?.network}"
+            textViewNumber.text = "${paymentInfo?.number}"
+            var imageIcon = R.drawable.ic_mtn_money
+            when (paymentInfo?.network) {
+                PaymentNetworks.VODAFONE.name -> imageIcon = R.drawable.ic_vodafone_cash
+                PaymentNetworks.AIRTEL.name -> imageIcon = R.drawable.ic_airtel_money
+                PaymentNetworks.TIGO.name -> imageIcon = R.drawable.ic_tigo_cash
+            }
+            imageViewGetWayIcon.setImageResource(imageIcon)
         }
-        imageViewGetWayIcon.setImageResource(imageIcon)
     }
 
     private fun cancelTimerAction() {
@@ -267,6 +279,4 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                 this.paymentInterface = callback
             }
     }
-
-
 }

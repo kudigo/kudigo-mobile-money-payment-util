@@ -4,24 +4,15 @@ import com.google.gson.annotations.SerializedName
 
 
 open class MoMoPaymentInfo(
-    @SerializedName("id")
+    @SerializedName("frontend_order_id")
     var id: String = "",
-    @SerializedName("name")
-    var name: String = "",
-    @SerializedName("network")
+    @SerializedName("payment_network")
     var network: String = "",
-    @SerializedName("number")
+    @SerializedName("customer_number")
     var number: String = "",
-    @SerializedName("reference")
-    var reference: String = "",
-    @SerializedName("status")
-    var status: String = "",
-    @SerializedName("voucherCode")
+    @SerializedName("payment_voucher-code")
     var voucherCode: String = "",
-    @SerializedName("amountPaid")
-    var amountPaid: Double = 0.0,
-    @SerializedName("responseCode")
-    var responseCode: String = "",
-    @SerializedName("responseMessage")
-    var responseMessage: String = ""
+    @SerializedName("payment_status")
+    var status: String = ""
+
 )

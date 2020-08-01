@@ -1,7 +1,7 @@
 package com.kudigo.mobile_money_util.retrofit
 
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.TransactionItem
+import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -12,5 +12,5 @@ interface ApiUrls{
     fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
 
     @GET("check_momo_status/")
-    fun checkPaymentStatus(@Query("transactionId") transactionId:String): Call<TransactionItem>
+    fun checkPaymentStatus(@Query("transactionId") transactionId:String): Call<MomoTransactionItem>
 }

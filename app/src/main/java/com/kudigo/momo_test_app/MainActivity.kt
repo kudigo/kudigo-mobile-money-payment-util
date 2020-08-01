@@ -15,14 +15,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val paymentInfo = MoMoPaymentInfo(
-            id = "1",
-            name = "Jay",
+            id = "20",
             network = "MTN",
             number = "0249668268",
-            reference = "0987",
-            status = "",
-            voucherCode = "",
-            amountPaid = 10.0
+            voucherCode = ""
         )
 
         buttonPay.setOnClickListener {
