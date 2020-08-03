@@ -10,8 +10,9 @@ open class MoMoPaymentInfo(
     var network: String = "",
     @SerializedName("customer_number")
     var number: String = "",
-    @SerializedName("payment_voucher-code")
+    @SerializedName("payment_voucher_code")
     var voucherCode: String = "",
+    var amount: Double = 0.0,
     @SerializedName("payment_status")
     var status: String = ""
 
