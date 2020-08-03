@@ -7,15 +7,15 @@ import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import retrofit2.Call
 import retrofit2.http.*
 
-interface ApiUrls{
+interface ApiUrls {
 
     @Headers("Content-Type: application/json")
     @POST("retry_momo_transaction/")
-    fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo): Call<MoMoPaymentInfo>
-
-    @GET("check_momo_status/")
-    fun checkPaymentStatus(@Query("transactionId") transactionId:String): Call<MomoTransactionItem>
+    fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo, @Header("Authorization") token: String): Call<MoMoPaymentInfo>
 
     @GET("transaction_tariffs/")
     fun getMomoCharges(): Call<JsonArrayResponse>
+
+    @GET("check_momo_status/")
+    fun checkPaymentStatus(@Query("transactionId") transactionId: String, @Header("Authorization") token: String): Call<MomoTransactionItem>
 }

@@ -9,23 +9,25 @@ import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 
 
 class MakePayment(private var context: AppCompatActivity) {
-    private var callBack: MoMoPaymentCallbackInterface? = null
     private var tag = "PAYMENT_HANDLER"
-    var token = ""
+    private var apiToken = ""
+
+    //start api token
+    fun setApiToken(apiToken: String): MakePayment {
+        this.apiToken = apiToken
+        return this
+    }
 
 
     //start momo processor
-    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, amount:Double, paymentExtraInfo: MoMoPaymentExtraInfo? = null, userToken:String ,paymentCallbackInterface: MoMoPaymentCallbackInterface) {
-        this.callBack = paymentCallbackInterface
-       this.token = userToken
-
+    fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: MoMoPaymentCallbackInterface) {
         // MARK: internet connection not available
         if (!Utility().hasNetworkConnection(context.applicationContext)) {
-            callBack?.onReceivedError(paymentExtraInfo!!.errorMessage)
+            paymentCallbackInterface.onReceivedError(paymentExtraInfo!!.errorMessage)
             return
         }
 
-        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, paymentInfo, amount,paymentCallbackInterface)
+        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, apiToken, paymentInfo, paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
         bottomSheetMoMoPaymentStatus.show(context.supportFragmentManager, tag)
     }

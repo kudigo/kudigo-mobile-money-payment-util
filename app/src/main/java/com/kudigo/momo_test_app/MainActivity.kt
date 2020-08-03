@@ -10,9 +10,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    var amount: Double = 200.0
-    var token = ""
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -21,29 +18,32 @@ class MainActivity : AppCompatActivity() {
             id = "20",
             network = "MTN",
             number = "0249668268",
-            voucherCode = ""
+            voucherCode = "",
+            amount = 20.0
         )
 
         buttonPay.setOnClickListener {
-            MakePayment(this).startMoMoPaymentProcessor(paymentInfo, amount,null,token, object : MoMoPaymentCallbackInterface {
+
+            MakePayment(this).setApiToken("").startMoMoPaymentProcessor(paymentInfo,null, object : MoMoPaymentCallbackInterface {
+
                 override fun onSuccess(network: String, number: String) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onFailed(reason: String) {
-                    TODO("Not yet implemented")
+
                 }
 
                 override fun onCancelled() {
-                    TODO("Not yet implemented")
+
                 }
 
-                override fun onReceivedError(message: String) {
-                    TODO("Not yet implemented")
+                override fun onReceivedError(errorMessage: String) {
+
                 }
 
                 override fun onReceivedData(moMoPaymentInfo: MoMoPaymentInfo, cancelMessage: String) {
-                    TODO("Not yet implemented")
+
                 }
 
             })
