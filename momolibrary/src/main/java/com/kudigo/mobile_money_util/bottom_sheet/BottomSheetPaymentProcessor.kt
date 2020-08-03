@@ -18,7 +18,9 @@ import com.kudigo.mobile_money_util.R
 import com.kudigo.mobile_money_util.Utility
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
+import com.kudigo.mobile_money_util.data.JsonArrayResponse
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
+import com.kudigo.mobile_money_util.data.MomoCharge
 import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
@@ -26,6 +28,8 @@ import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
@@ -36,6 +40,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var timer: CountDownTimer? = null
     private var time = 2000000L
     private var amount:Double = 0.0
+    private var momoChargeValue:Double? = 0.0
     private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
 
@@ -46,7 +51,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-
+        calculateCharges()
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
             cancelTimerAction()
@@ -65,8 +70,12 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
         paymentInfo?.let {
             paymentProgress.visibility = View.VISIBLE
-            val orderLabel = activityCalling!!.getString(R.string.order_amount_charge)
-            val amountRounded = Utility().round(10.0, 2)
+            val orderLabel = getString(R.string.order_amount_charge)
+            val amountRounded = Utility().round(amount, 2)
+            val charge = "$momoChargeValue" + getString(R.string.currency)
+            Log.e("charge",momoChargeValue.toString())
+            val orderInformation = "${paymentInfo?.id}"+ "\n" + getString(R.string.currency) +"$amountRounded\n$charge"
+            textViewOrder.text = orderInformation
             textViewOrderLabel.text = orderLabel
             showPaymentIcon()
             paymentRequest(it)
@@ -202,6 +211,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         textViewMessage.setTextColor(requireActivity().resources!!.getColor(R.color.colorRed))
     }
 
+    //make payment
     private fun paymentRequest(paymentInfo: MoMoPaymentInfo) {
         paymentProgress.visibility = View.VISIBLE
         retrofit.paymentRequest(paymentInfo).enqueue(
@@ -231,6 +241,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             })
     }
 
+    //retry transaction
     private fun retryMomoTransaction() {
         buttonOptions.visibility = View.GONE
         paymentProgress.visibility = View.GONE
@@ -273,8 +284,30 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     }
 
 
+//get charge for momo transaction
+    fun calculateCharges() {
+        retrofit.getMomoCharges().enqueue(
+                object : Callback<JsonArrayResponse> {
+                    override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
+                        Log.e("error", t.toString())
+
+                    }
+
+                    override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
+                        val result = response.body()?.results
+
+                        val chargeResult= result?.filter { it.lowerBound <= amount && it.upperBound >= amount }
+                       momoChargeValue = chargeResult?.get(0)?.chargeValue
+
+
+                    }
+                }
+        )
+    }
+
+
     companion object {
-        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null,amount:Double, callback: MoMoPaymentCallbackInterface) =
+        fun newInstance(activity: Activity, paymentInfo: MoMoPaymentInfo? = null, amount:Double, callback: MoMoPaymentCallbackInterface) =
             BottomSheetPaymentProcessor().apply {
                 this.activityCalling = activity
                 this.paymentInfo = paymentInfo

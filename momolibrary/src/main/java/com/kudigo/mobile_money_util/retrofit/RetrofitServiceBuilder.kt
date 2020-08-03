@@ -1,6 +1,11 @@
 package com.kudigo.mobile_money_util.retrofit
 
+import android.app.Activity
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.kudigo.mobile_money_util.BuildConfig
+import com.kudigo.mobile_money_util.MakePayment
+import com.kudigo.mobile_money_util.Utility
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -11,6 +16,8 @@ import java.io.IOException
 object ServiceBuilder {
     private val BASE_URL = BuildConfig.BASE_URL
     private val API_KEY= BuildConfig.API_KEY
+    private var appCompat:AppCompatActivity? = null
+    private val token = "407b48434855b155ea8e29ddefc9a0cef89e306a"
 
 
     private val authInterceptor = Interceptor {chain->
@@ -21,6 +28,7 @@ object ServiceBuilder {
 
         val newRequest = chain.request()
                 .newBuilder()
+                .addHeader("Authorization", "Token $token")
                 .url(newUrl)
                 .build()
 
@@ -42,5 +50,6 @@ object ServiceBuilder {
     fun <T> buildService(service: Class<T>): T {
         return retrofit.create(service)
     }
+
 
 }

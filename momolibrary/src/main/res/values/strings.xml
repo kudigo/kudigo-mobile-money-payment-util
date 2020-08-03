@@ -23,6 +23,7 @@
     <string name="continue_with_another_network">Choose Another Network</string>
     <string name="transaction_successful">Transaction successful</string>
     <string name="order_amount_charge">Order #:\nAmount:\nCharge:</string>
+    <string name="currency">GHS</string>
 
 
 </resources>

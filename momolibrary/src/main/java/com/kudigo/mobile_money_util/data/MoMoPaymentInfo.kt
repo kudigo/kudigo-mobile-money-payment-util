@@ -3,7 +3,7 @@ package com.kudigo.mobile_money_util.data
 import com.google.gson.annotations.SerializedName
 
 
-open class MoMoPaymentInfo(
+data class MoMoPaymentInfo(
     @SerializedName("frontend_order_id")
     var id: String = "",
     @SerializedName("payment_network")
