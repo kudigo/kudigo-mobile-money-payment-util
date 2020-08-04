@@ -28,8 +28,6 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
@@ -39,8 +37,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
-    private var momoChargeValue: Double? = 0.0
-    private var result: MutableList<MomoCharge>? = null
+    private var momoChargeValue = "*.****"
     private var apiToken = ""
     private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
@@ -51,7 +48,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        getCharges()
+
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
             cancelTimerAction()
@@ -70,16 +67,21 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
         paymentInfo?.let {
             paymentProgress.visibility = View.VISIBLE
-            val orderLabel = getString(R.string.order_amount_charge)
-            val amountRounded = Utility().round(paymentInfo!!.amount, 2)
-            val charge =  calculateCharges(paymentInfo!!.amount) + getString(R.string.currency)
-            val orderInformation = "${paymentInfo?.id}" + "\n" + getString(R.string.currency) + "$amountRounded\n$charge"
-            textViewOrder.text = orderInformation
-            textViewOrderLabel.text = orderLabel
+
+            showCharges()
+            calculateCharges()
             showPaymentIcon()
             paymentRequest(it)
         }
+    }
 
+    private fun showCharges() {
+        val orderLabel = getString(R.string.order_amount_charge)
+        val amountRounded = Utility().round(paymentInfo!!.amount, 2)
+        val charge = "$momoChargeValue " + getString(R.string.currency)
+        val orderInformation = "${paymentInfo?.id}" + "\n" + getString(R.string.currency) + "$amountRounded\n$charge"
+        textViewOrder.text = orderInformation
+        textViewOrderLabel.text = orderLabel
     }
 
 
@@ -121,7 +123,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
             enterNumber()
             showPaymentIcon()
-
         }
         builder.show()
     }
@@ -279,40 +280,31 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     //get charge for momo transaction
-    private fun getCharges() {
-       retrofit.getMomoCharges().enqueue(
+
+    private fun calculateCharges() {
+        retrofit.getMomoCharges().enqueue(
                 object : Callback<JsonArrayResponse> {
                     override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
                         Log.e("error", t.toString())
                     }
 
                     override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
-                        if (response.isSuccessful) {
-                            result = response.body()?.results
-                            Log.e("res", result.toString())
+                        val result = response.body()?.results
+                        val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
+                        chargeResult?.let {
 
+                            if (it.chargeType == MomoChargeType.FLAT.name) {
+                                momoChargeValue = it.chargeValue.toString()
+                            } else {
+                                getString(R.string.currency) + Utility().round(paymentInfo!!.amount.times(it.chargeValue), 2)
+                            }
                         }
+                        showCharges()
+
                     }
                 }
         )
 
-    }
-
-    fun calculateCharges(amount: Double):String {
-        getCharges()
-        var chargeToDisplay: String = ""
-            val chargeResult = result?.filter { it.lowerBound <= amount && it.upperBound >= amount }
-            val momoCharge = chargeResult?.get(0)
-            if (momoCharge != null) {
-                if (MomoCharge().chargeType == MomoChargeType.FLAT.name) {
-                    chargeToDisplay = momoCharge.chargeValue.toString()
-                } else {
-                    getString(R.string.currency) + Utility().round(amount.times(momoChargeValue!!), 2)
-                }
-            } else {
-                "****"
-            }
-        return chargeToDisplay
     }
 
 
