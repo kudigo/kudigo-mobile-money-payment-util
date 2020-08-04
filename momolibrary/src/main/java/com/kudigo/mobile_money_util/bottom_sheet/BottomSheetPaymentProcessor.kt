@@ -20,7 +20,6 @@ import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
 import com.kudigo.mobile_money_util.data.JsonArrayResponse
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.MomoCharge
 import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
@@ -28,8 +27,6 @@ import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
@@ -39,8 +36,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
-    private var amount:Double = 0.0
-    private var momoChargeValue:Double? = 0.0
+    private var momoChargeValue = "*.****"
     private var apiToken = ""
     private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
@@ -52,7 +48,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        calculateCharges()
+
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
             cancelTimerAction()
@@ -71,16 +67,20 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
         paymentInfo?.let {
             paymentProgress.visibility = View.VISIBLE
-            val orderLabel = getString(R.string.order_amount_charge)
-            val amountRounded = Utility().round(amount, 2)
-            val charge = "$momoChargeValue" + getString(R.string.currency)
-            val orderInformation = "${paymentInfo?.id}"+ "\n" + getString(R.string.currency) +"$amountRounded\n$charge"
-            textViewOrder.text = orderInformation
-            textViewOrderLabel.text = orderLabel
+            showCharges()
+            calculateCharges()
             showPaymentIcon()
             paymentRequest(it)
         }
+    }
 
+    private fun showCharges() {
+        val orderLabel = getString(R.string.order_amount_charge)
+        val amountRounded = Utility().round(paymentInfo!!.amount, 2)
+        val charge = "$momoChargeValue " + getString(R.string.currency)
+        val orderInformation = "${paymentInfo?.id}" + "\n" + getString(R.string.currency) + "$amountRounded\n$charge"
+        textViewOrder.text = orderInformation
+        textViewOrderLabel.text = orderLabel
     }
 
 
@@ -122,7 +122,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
             enterNumber()
             showPaymentIcon()
-
         }
         builder.show()
     }
@@ -278,28 +277,25 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     }
 
 
-//get charge for momo transaction
-    fun calculateCharges() {
+    //get charge for momo transaction
+    private fun calculateCharges() {
         retrofit.getMomoCharges().enqueue(
-                object : Callback<JsonArrayResponse> {
-                    override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
-                        Log.e("error", t.toString())
+            object : Callback<JsonArrayResponse> {
+                override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
+                    Log.e("error", t.toString())
+                }
 
-                    }
-
-                    override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
-                        val result = response.body()?.results
-
-                        val chargeResult= result?.filter { it.lowerBound <= amount && it.upperBound >= amount }
-                        if(chargeResult?.size!! >0) {
-                            momoChargeValue = chargeResult?.get(0)?.chargeValue
-                        }
-
+                override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
+                    val result = response.body()?.results
+                    val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
+                    chargeResult?.let {
+                        momoChargeValue = it.chargeValue.toString()
+                        showCharges()
                     }
                 }
+            }
         )
     }
-
 
     companion object {
         fun newInstance(activity: Activity, apiToken: String, paymentInfo: MoMoPaymentInfo? = null, callback: MoMoPaymentCallbackInterface) =
