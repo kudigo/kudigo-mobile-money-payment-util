@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
             network = "MTN",
             number = "0249668268",
             voucherCode = "",
-            amount = 20.0
+            amount = 200.0
         )
 
         buttonPay.setOnClickListener {

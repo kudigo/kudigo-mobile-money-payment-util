@@ -7,3 +7,7 @@ enum class PaymentStatus {
 enum class PaymentNetworks {
    MTN,VODAFONE,AIRTEL,TIGO
 }
+
+enum class MomoChargeType {
+   FLAT,PERCENTAGE
+}
