@@ -282,7 +282,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     //get charge for momo transaction
 
     private fun calculateCharges() {
-        retrofit.getMomoCharges().enqueue(
+        retrofit.getMomoCharges(apiToken).enqueue(
                 object : Callback<JsonArrayResponse> {
                     override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
                         Log.e("error", t.toString())

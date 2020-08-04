@@ -12,7 +12,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceBuilder {
-    private val token = "407b48434855b155ea8e29ddefc9a0cef89e306a"
+
     private const val BASE_URL = BuildConfig.BASE_URL
 
 
@@ -23,7 +23,6 @@ object ServiceBuilder {
 
         val newRequest = chain.request()
                 .newBuilder()
-                .addHeader("Authorization", "Token $token")
                 .url(newUrl)
                 .build()
 

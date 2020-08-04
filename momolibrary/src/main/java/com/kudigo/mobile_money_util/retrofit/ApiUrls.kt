@@ -14,7 +14,7 @@ interface ApiUrls {
     fun paymentRequest(@Body paymentInfo: MoMoPaymentInfo, @Header("Authorization") token: String): Call<MoMoPaymentInfo>
 
     @GET("transaction_tariffs/")
-    fun getMomoCharges(): Call<JsonArrayResponse>
+    fun getMomoCharges( @Header("Authorization") token: String): Call<JsonArrayResponse>
 
     @GET("check_momo_status/")
     fun checkPaymentStatus(@Query("transactionId") transactionId: String, @Header("Authorization") token: String): Call<MomoTransactionItem>
