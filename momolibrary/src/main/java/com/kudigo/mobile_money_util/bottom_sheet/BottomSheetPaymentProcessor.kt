@@ -1,7 +1,9 @@
 package com.kudigo.mobile_money_util.bottom_sheet
 
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -11,23 +13,23 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.afollestad.materialdialogs.MaterialDialog
-import com.kudigo.mobile_money_util.*
+import com.kudigo.mobile_money_util.MomoChargeType
+import com.kudigo.mobile_money_util.PaymentNetworks
+import com.kudigo.mobile_money_util.PaymentStatus
+import com.kudigo.mobile_money_util.R
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
 import com.kudigo.mobile_money_util.data.JsonArrayResponse
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.MomoCharge
 import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.math.BigDecimal
 
 
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
@@ -48,6 +50,9 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        //MARK: format the token ina format the api accepts
+        apiToken = "Token $apiToken"
 
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
@@ -78,8 +83,8 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     private fun showCharges() {
         val orderLabel = getString(R.string.order_amount_charge)
-        val amountRounded = Utility().round(paymentInfo!!.amount, 2)
-        val charge = "$momoChargeValue " + getString(R.string.currency)
+        val amountRounded = round(paymentInfo!!.amount, 2)
+        val charge =   getString(R.string.currency) + " $momoChargeValue"
         val orderInformation = "${paymentInfo?.id}" + "\n" + getString(R.string.currency) + "$amountRounded\n$charge"
         textViewOrder.text = orderInformation
         textViewOrderLabel.text = orderLabel
@@ -119,7 +124,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         builder.setSingleChoiceItems(networkOptions, selectedOption, DialogInterface.OnClickListener { dialog, which ->
             selectedOption = which
             paymentInfo!!.network = networkOptions[selectedOption]
-
         })
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
             enterNumber()
@@ -292,19 +296,37 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                         val result = response.body()?.results
                         val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
                         chargeResult?.let {
-
-                            if (it.chargeType == MomoChargeType.FLAT.name) {
-                                momoChargeValue = it.chargeValue.toString()
+                            momoChargeValue = if (it.chargeType == MomoChargeType.FLAT.name) {
+                                it.chargeValue.toString()
                             } else {
-                                getString(R.string.currency) + Utility().round(paymentInfo!!.amount.times(it.chargeValue), 2)
+                                round(paymentInfo!!.amount.times(it.chargeValue), 2)
                             }
                         }
                         showCharges()
-
                     }
                 }
         )
 
+    }
+
+    // check for internet connection
+    fun hasNetworkConnection(context: Context): Boolean {
+        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return cm.activeNetworkInfo != null && cm.activeNetworkInfo.isConnectedOrConnecting
+    }
+
+
+
+    fun round(value: Double?, numberOfDigitsAfterDecimalPoint: Int): String {
+        if (value == null) {
+            return value.toString()
+        }
+        var bigDecimal = BigDecimal(value)
+        bigDecimal = bigDecimal.setScale(
+            numberOfDigitsAfterDecimalPoint,
+            BigDecimal.ROUND_HALF_UP
+        )
+        return bigDecimal.toPlainString()
     }
 
 
