@@ -33,7 +33,6 @@ import retrofit2.Response
 class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var paymentCallbackInterface: MoMoPaymentCallbackInterface? = null
     private var paymentInfo: MoMoPaymentInfo? = null
-    private var paymentInterface: MoMoPaymentCallbackInterface? = null
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
@@ -280,7 +279,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     //get charge for momo transaction
-
     private fun calculateCharges() {
         retrofit.getMomoCharges(apiToken).enqueue(
                 object : Callback<JsonArrayResponse> {
@@ -313,7 +311,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                 BottomSheetPaymentProcessor().apply {
                     this.activityCalling = activity
                     this.paymentInfo = paymentInfo
-                    this.paymentInterface = callback
+                    this.paymentCallbackInterface = callback
                     this.apiToken = apiToken
                 }
     }
