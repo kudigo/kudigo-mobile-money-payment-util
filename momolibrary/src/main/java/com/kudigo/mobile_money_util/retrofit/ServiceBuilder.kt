@@ -1,11 +1,6 @@
 package com.kudigo.mobile_money_util.retrofit
 
-import android.app.Activity
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.kudigo.mobile_money_util.BuildConfig
-import com.kudigo.mobile_money_util.MakePayment
-import com.kudigo.mobile_money_util.Utility
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

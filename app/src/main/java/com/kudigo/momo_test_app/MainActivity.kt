@@ -24,8 +24,8 @@ class MainActivity : AppCompatActivity() {
         )
 
         buttonPay.setOnClickListener {
+            MakePayment(this).setApiToken("cdb523ace6569be94a4a8d5e1057f1dcacd006ca").startMoMoPaymentProcessor(paymentInfo,null, object : MoMoPaymentCallbackInterface {
 
-            MakePayment(this).setApiToken("Token cdb523ace6569be94a4a8d5e1057f1dcacd006ca").startMoMoPaymentProcessor(paymentInfo,null, object : MoMoPaymentCallbackInterface {
 
                 override fun onSuccess(network: String, number: String) {
 
@@ -42,11 +42,6 @@ class MainActivity : AppCompatActivity() {
                 override fun onReceivedError(errorMessage: String) {
 
                 }
-
-                override fun onReceivedData(moMoPaymentInfo: MoMoPaymentInfo, cancelMessage: String) {
-
-                }
-
             })
         }
     }
