@@ -101,7 +101,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                             textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
                         } else if (result?.transactionStatus == PaymentStatus.FAILED.name) {
                             paymentInfo?.status = PaymentStatus.FAILED.name
-                            transactionFailed(response.message())
+                            transactionFailed(getString(R.string.transaction_failed))
                         }
                     }
                 }
@@ -187,7 +187,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     }
 
 
-    //on failure
+    //on done
     private fun transactionFinished() {
         dismiss()
         paymentCallbackInterface?.onSuccess(paymentInfo!!.network, paymentInfo!!.number)
@@ -223,12 +223,10 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                     }
 
                     override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
-                        val result = response.body()
                         if (response.isSuccessful) {
-                            Log.e("response", "success")
-                            paymentProgress?.visibility = View.GONE
-                            textViewMessage?.text = response.message()
-                            buttonMobileMoneyAction?.visibility = View.VISIBLE
+                            timer?.start()
+                            buttonMobileMoneyAction.visibility = View.VISIBLE
+                            textViewMessage.text = getString(R.string.momo_authorization_message)
                             updatePaymentStatus()
                         }
                     }
@@ -290,7 +288,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                         val result = response.body()?.results
                         val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
                         chargeResult?.let {
-
                             if (it.chargeType == MomoChargeType.FLAT.name) {
                                 momoChargeValue = it.chargeValue.toString()
                             } else {

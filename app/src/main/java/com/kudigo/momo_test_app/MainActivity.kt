@@ -1,6 +1,7 @@
 package com.kudigo.momo_test_app
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.kudigo.mobile_money_util.MakePayment
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
@@ -15,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val paymentInfo = MoMoPaymentInfo(
-            id = "20",
+            id = "1596648967650",
             network = "MTN",
             number = "0249668268",
             voucherCode = "",
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonPay.setOnClickListener {
 
-            MakePayment(this).setApiToken("").startMoMoPaymentProcessor(paymentInfo,null, object : MoMoPaymentCallbackInterface {
+            MakePayment(this).setApiToken("Token cdb523ace6569be94a4a8d5e1057f1dcacd006ca").startMoMoPaymentProcessor(paymentInfo,null, object : MoMoPaymentCallbackInterface {
 
                 override fun onSuccess(network: String, number: String) {
 
