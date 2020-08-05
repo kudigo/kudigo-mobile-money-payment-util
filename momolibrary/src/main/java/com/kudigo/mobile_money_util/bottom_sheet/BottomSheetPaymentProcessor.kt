@@ -53,6 +53,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             transactionFinished()
             cancelTimerAction()
         }
+
         buttonCancel.setOnClickListener {
             cancelTransaction()
         }
@@ -186,7 +187,6 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     }
 
-
     //on failure
     private fun transactionFinished() {
         dismiss()
@@ -196,7 +196,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     //cancel transaction
     private fun cancelTransaction() {
         dismiss()
-        paymentCallbackInterface?.onReceivedData(paymentInfo!!, getString(R.string.transaction_cancelled))
+        paymentCallbackInterface?.onCancelled()
     }
 
 
