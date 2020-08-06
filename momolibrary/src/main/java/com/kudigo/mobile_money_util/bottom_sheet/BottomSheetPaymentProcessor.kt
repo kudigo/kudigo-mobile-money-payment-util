@@ -1,9 +1,6 @@
 package com.kudigo.mobile_money_util.bottom_sheet
 
 import android.app.Activity
-import android.content.Context
-import android.content.DialogInterface
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.util.Log
@@ -50,7 +47,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        //MARK: format the token ina format the api accepts
+        //MARK: format the token in a format the api accepts
         apiToken = "Token $apiToken"
 
         buttonMobileMoneyAction.setOnClickListener {
@@ -120,10 +117,10 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         var selectedOption = 0
         val builder = AlertDialog.Builder(activityCalling!!)
         builder.setTitle(getString(R.string.continue_with_another_network))
-        builder.setSingleChoiceItems(networkOptions, selectedOption, DialogInterface.OnClickListener { dialog, which ->
+        builder.setSingleChoiceItems(networkOptions, selectedOption) { dialog, which ->
             selectedOption = which
             paymentInfo!!.network = networkOptions[selectedOption]
-        })
+        }
         builder.setPositiveButton(getString(R.string.continue_)) { dialog, which ->
             enterNumber()
             showPaymentIcon()
@@ -221,6 +218,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         retrofit.paymentRequest(paymentInfo, apiToken).enqueue(
                 object : Callback<MoMoPaymentInfo> {
                     override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
+                        timer?.start()
                         paymentProgress?.visibility = View.GONE
                         textViewMessage?.text = t.toString()
                         buttonOptions?.visibility = View.VISIBLE
@@ -303,15 +301,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
                     }
                 }
         )
-
     }
-
-    // check for internet connection
-    fun hasNetworkConnection(context: Context): Boolean {
-        val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return cm.activeNetworkInfo != null && cm.activeNetworkInfo.isConnectedOrConnecting
-    }
-
 
 
     fun round(value: Double?, numberOfDigitsAfterDecimalPoint: Int): String {
