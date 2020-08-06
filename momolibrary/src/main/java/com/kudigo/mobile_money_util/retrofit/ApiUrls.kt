@@ -1,8 +1,6 @@
 package com.kudigo.mobile_money_util.retrofit
 
-import com.kudigo.mobile_money_util.data.JsonArrayResponse
-import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.MomoTransactionItem
+import com.kudigo.mobile_money_util.data.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -14,6 +12,6 @@ interface ApiUrls {
     @GET("transaction_tariffs/")
     fun getMomoCharges( @Header("Authorization") token: String): Call<JsonArrayResponse>
 
-    @GET("check_momo_status/")
-    fun checkPaymentStatus(@Query("frontend_order_id") transactionId: String, @Header("Authorization") token: String): Call<MomoTransactionItem>
+    @POST("check_momo_status/")
+    fun checkPaymentStatus(@Body transactionId: TransactionId, @Header("Authorization") token: String): Call<TransactionResult>
 }

@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onFailed(reason: String) {
 
+
                 }
 
                 override fun onCancelled() {

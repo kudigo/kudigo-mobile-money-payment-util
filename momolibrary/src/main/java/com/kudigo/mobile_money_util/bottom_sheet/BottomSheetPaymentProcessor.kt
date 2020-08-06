@@ -11,16 +11,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.afollestad.materialdialogs.MaterialDialog
+import com.google.gson.Gson
 import com.kudigo.mobile_money_util.MomoChargeType
 import com.kudigo.mobile_money_util.MoMoPaymentNetworks
 import com.kudigo.mobile_money_util.MoMoPaymentStatus
 import com.kudigo.mobile_money_util.R
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
-import com.kudigo.mobile_money_util.data.JsonArrayResponse
-import com.kudigo.mobile_money_util.data.MoMoPaymentExtraInfo
-import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
-import com.kudigo.mobile_money_util.data.MomoTransactionItem
+import com.kudigo.mobile_money_util.data.*
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
 import com.kudigo.mobile_money_util.retrofit.ServiceBuilder
 import kotlinx.android.synthetic.main.bottom_sheet_payment_processor.*
@@ -34,6 +32,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
     private var paymentCallbackInterface: MoMoPaymentCallbackInterface? = null
     private var paymentInfo: MoMoPaymentInfo? = null
     private var paymentExtraInfo: MoMoPaymentExtraInfo? = null
+    private var transactionOrderId:TransactionId? = null
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
@@ -52,6 +51,11 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
         //MARK: format the token in a format the api accepts
         apiToken = "Token $apiToken"
 
+       transactionOrderId = TransactionId(
+               orderId = paymentInfo!!.id,
+               momoTransactionId = paymentInfo!!.id
+       )
+
         buttonMobileMoneyAction.setOnClickListener {
             transactionFinished()
             cancelTimerAction()
@@ -61,6 +65,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
             cancelTransaction()
         }
         buttonChange.setOnClickListener {
+            cancelTimerAction()
             changeNetwork()
         }
 
@@ -90,16 +95,20 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
 
 
     fun checkPaymentStatus() {
-        retrofit.checkPaymentStatus(paymentInfo!!.id, apiToken).enqueue(
-            object : Callback<MomoTransactionItem> {
-                override fun onFailure(call: Call<MomoTransactionItem>, t: Throwable) {
-                    transactionFailed(t.toString())
+        retrofit.checkPaymentStatus(transactionOrderId!!, apiToken).enqueue(
+            object : Callback<TransactionResult> {
+                override fun onFailure(call: Call<TransactionResult>, t: Throwable) {
+                    transactionFailed(paymentExtraInfo!!.errorMessage)
                 }
 
-                override fun onResponse(call: Call<MomoTransactionItem>, response: Response<MomoTransactionItem>) {
-                    val result = response.body()
+                override fun onResponse(call: Call<TransactionResult>, response: Response<TransactionResult>) {
+                    val result = response.body()?.results
+
+                    Log.e("status",result.toString())
                     if (result?.transactionStatus == MoMoPaymentStatus.SUCCESS.name) {
+                        Log.e("status",result.transactionStatus)
                         paymentInfo?.status = MoMoPaymentStatus.SUCCESS.name
+                        cancelTimerAction()
                         buttonOptions.visibility = View.GONE
                         paymentProgress.visibility = View.GONE
                         textViewMessage.text = getString(R.string.transaction_successful)
@@ -111,6 +120,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                 }
             }
         )
+
     }
 
 
@@ -210,7 +220,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
         buttonOptions?.visibility = View.VISIBLE
         buttonCancel?.visibility = View.VISIBLE
         paymentProgress?.visibility = View.GONE
-        textViewMessage?.text = message
+        textViewMessage?.text = paymentExtraInfo!!.errorMessage
         textViewMessage.setTextColor(requireActivity().resources!!.getColor(R.color.colorRed))
     }
 
@@ -222,7 +232,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                 override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
                     timer?.start()
                     paymentProgress?.visibility = View.GONE
-                    textViewMessage?.text = t.toString()
+                    textViewMessage?.text = paymentExtraInfo!!.retryMessage
                     buttonOptions?.visibility = View.VISIBLE
                     buttonChange?.visibility = View.VISIBLE
                 }
@@ -231,7 +241,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                     if (response.isSuccessful) {
                         timer?.start()
                         buttonMobileMoneyAction.visibility = View.VISIBLE
-                        textViewMessage.text = getString(R.string.momo_authorization_message)
+                        textViewMessage.text = paymentExtraInfo!!.authorisationMessage
                         updatePaymentStatus()
                     }
                 }
@@ -296,7 +306,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                         momoChargeValue = if (it.chargeType == MomoChargeType.FLAT.name) {
                             it.chargeValue.toString()
                         } else {
-                            round(paymentInfo!!.amount.times(it.chargeValue), 2)
+                           round(paymentInfo!!.amount.times(it.chargeValue), 2)
                         }
                     }
                     showCharges()
@@ -329,4 +339,11 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                 this.paymentExtraInfo = paymentExtraInfo
             }
     }
+
+    override fun onStop() {
+        cancelTimerAction()
+        super.onStop()
+    }
+
+
 }
