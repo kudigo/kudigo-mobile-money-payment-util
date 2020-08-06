@@ -103,10 +103,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
 
                 override fun onResponse(call: Call<TransactionResult>, response: Response<TransactionResult>) {
                     val result = response.body()?.results
-
-                    Log.e("status",result.toString())
                     if (result?.transactionStatus == MoMoPaymentStatus.SUCCESS.name) {
-                        Log.e("status",result.transactionStatus)
                         paymentInfo?.status = MoMoPaymentStatus.SUCCESS.name
                         cancelTimerAction()
                         buttonOptions.visibility = View.GONE
