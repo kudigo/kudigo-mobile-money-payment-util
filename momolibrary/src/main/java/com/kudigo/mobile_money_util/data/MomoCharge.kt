@@ -15,9 +15,8 @@ data class MomoCharge(
         var chargeValue: Double = 0.0
 )
 
-class JsonArrayResponse {
+data class JsonArrayResponse (
    @SerializedName("results")
     var results: MutableList<MomoCharge>? = null
-
-}
+)
 

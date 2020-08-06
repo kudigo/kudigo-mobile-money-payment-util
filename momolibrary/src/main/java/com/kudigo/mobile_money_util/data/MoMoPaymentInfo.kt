@@ -15,5 +15,4 @@ data class MoMoPaymentInfo(
     var amount: Double = 0.0,
     @SerializedName("payment_status")
     var status: String = ""
-
 )

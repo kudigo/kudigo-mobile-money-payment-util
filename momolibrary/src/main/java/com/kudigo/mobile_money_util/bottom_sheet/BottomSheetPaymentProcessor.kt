@@ -12,12 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.kudigo.mobile_money_util.MomoChargeType
-import com.kudigo.mobile_money_util.PaymentNetworks
-import com.kudigo.mobile_money_util.PaymentStatus
+import com.kudigo.mobile_money_util.MoMoPaymentNetworks
+import com.kudigo.mobile_money_util.MoMoPaymentStatus
 import com.kudigo.mobile_money_util.R
 import com.kudigo.mobile_money_util.callback.MoMoPaymentCallbackInterface
 import com.kudigo.mobile_money_util.callback.MomoResultInterface
 import com.kudigo.mobile_money_util.data.JsonArrayResponse
+import com.kudigo.mobile_money_util.data.MoMoPaymentExtraInfo
 import com.kudigo.mobile_money_util.data.MoMoPaymentInfo
 import com.kudigo.mobile_money_util.data.MomoTransactionItem
 import com.kudigo.mobile_money_util.retrofit.ApiUrls
@@ -29,15 +30,16 @@ import retrofit2.Response
 import java.math.BigDecimal
 
 
-class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
+internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private var paymentCallbackInterface: MoMoPaymentCallbackInterface? = null
     private var paymentInfo: MoMoPaymentInfo? = null
+    private var paymentExtraInfo: MoMoPaymentExtraInfo? = null
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
     private var momoChargeValue = "*.****"
     private var apiToken = ""
-    private val networkOptions = arrayOf(PaymentNetworks.MTN.name, PaymentNetworks.VODAFONE.name, PaymentNetworks.AIRTEL.name, PaymentNetworks.TIGO.name)
+    private val networkOptions = arrayOf(MoMoPaymentNetworks.MTN.name, MoMoPaymentNetworks.VODAFONE.name, MoMoPaymentNetworks.AIRTEL.name, MoMoPaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -80,7 +82,7 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private fun showCharges() {
         val orderLabel = getString(R.string.order_amount_charge)
         val amountRounded = round(paymentInfo!!.amount, 2)
-        val charge =   getString(R.string.currency) + " $momoChargeValue"
+        val charge = getString(R.string.currency) + " $momoChargeValue"
         val orderInformation = "${paymentInfo?.id}" + "\n" + getString(R.string.currency) + "$amountRounded\n$charge"
         textViewOrder.text = orderInformation
         textViewOrderLabel.text = orderLabel
@@ -89,25 +91,25 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
     fun checkPaymentStatus() {
         retrofit.checkPaymentStatus(paymentInfo!!.id, apiToken).enqueue(
-                object : Callback<MomoTransactionItem> {
-                    override fun onFailure(call: Call<MomoTransactionItem>, t: Throwable) {
-                        transactionFailed(t.toString())
-                    }
+            object : Callback<MomoTransactionItem> {
+                override fun onFailure(call: Call<MomoTransactionItem>, t: Throwable) {
+                    transactionFailed(t.toString())
+                }
 
-                    override fun onResponse(call: Call<MomoTransactionItem>, response: Response<MomoTransactionItem>) {
-                        val result = response.body()
-                        if (result?.transactionStatus == PaymentStatus.SUCCESS.name) {
-                            paymentInfo?.status = PaymentStatus.SUCCESS.name
-                            buttonOptions.visibility = View.GONE
-                            paymentProgress.visibility = View.GONE
-                            textViewMessage.text = getString(R.string.transaction_successful)
-                            textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
-                        } else if (result?.transactionStatus == PaymentStatus.FAILED.name) {
-                            paymentInfo?.status = PaymentStatus.FAILED.name
-                            transactionFailed(getString(R.string.transaction_failed))
-                        }
+                override fun onResponse(call: Call<MomoTransactionItem>, response: Response<MomoTransactionItem>) {
+                    val result = response.body()
+                    if (result?.transactionStatus == MoMoPaymentStatus.SUCCESS.name) {
+                        paymentInfo?.status = MoMoPaymentStatus.SUCCESS.name
+                        buttonOptions.visibility = View.GONE
+                        paymentProgress.visibility = View.GONE
+                        textViewMessage.text = getString(R.string.transaction_successful)
+                        textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
+                    } else if (result?.transactionStatus == MoMoPaymentStatus.FAILED.name) {
+                        paymentInfo?.status = MoMoPaymentStatus.FAILED.name
+                        transactionFailed(getString(R.string.transaction_failed))
                     }
                 }
+            }
         )
     }
 
@@ -135,56 +137,56 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
             placeHolder = placeHolder.replace("+233", "0")
         }
         acceptInputDialog(activityCalling!!.getString(R.string.retry_payment_transaction),
-                activityCalling!!.getString(R.string.enter_customer_number_or_different_number),
-                activityCalling!!.getString(R.string.customer_phone_number),
-                placeHolder,
-                object : MomoResultInterface {
-                    override fun onReceivedData(data: String) {
-                        paymentInfo!!.number = data
-                        if (paymentInfo!!.network == PaymentNetworks.VODAFONE.name) {
-                            enterVodafoneVoucher()
-                            return
-                        }
-                        retryMomoTransaction()
+            activityCalling!!.getString(R.string.enter_customer_number_or_different_number),
+            activityCalling!!.getString(R.string.customer_phone_number),
+            placeHolder,
+            object : MomoResultInterface {
+                override fun onReceivedData(data: String) {
+                    paymentInfo!!.number = data
+                    if (paymentInfo!!.network == MoMoPaymentNetworks.VODAFONE.name) {
+                        enterVodafoneVoucher()
+                        return
                     }
-                })
+                    retryMomoTransaction()
+                }
+            })
     }
 
 
     private fun enterVodafoneVoucher() {
         acceptInputDialog(activityCalling!!.getString(R.string.retry_payment_transaction),
-                activityCalling!!.getString(R.string.enter_voucher_code_vodafone_cash),
-                activityCalling!!.getString(R.string.voucher_code),
-                "",
-                object : MomoResultInterface {
-                    override fun onReceivedData(data: String) {
-                        paymentInfo!!.voucherCode = data
-                        retryMomoTransaction()
-                    }
-                })
+            activityCalling!!.getString(R.string.enter_voucher_code_vodafone_cash),
+            activityCalling!!.getString(R.string.voucher_code),
+            "",
+            object : MomoResultInterface {
+                override fun onReceivedData(data: String) {
+                    paymentInfo!!.voucherCode = data
+                    retryMomoTransaction()
+                }
+            })
     }
 
     //dialog to accept input
     private fun acceptInputDialog(title: String, message: String, hint: String, defaultInput: String? = "", resultInterface: MomoResultInterface) {
         MaterialDialog.Builder(activityCalling!!)
-                .title(title)
-                .typeface(ResourcesCompat.getFont(activityCalling!!, R.font.brown_regular), ResourcesCompat.getFont(activityCalling!!, R.font.brown_thin))
-                .cancelable(true)
-                .contentLineSpacing(1.2f)
-                .buttonRippleColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimaryDark))
-                .positiveColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimaryDark))
-                .negativeColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimary))
-                .neutralColor(ContextCompat.getColor(activityCalling!!, R.color.colorLightDark))
-                .content(message)
-                .positiveText(activityCalling!!.getString(R.string.done))
-                .input(hint, defaultInput, false) { dialog, input ->
-                    dialog.dismiss()
-                    resultInterface.onReceivedData(input.trim().toString())
-                }
-                .onPositive { dialog, _ ->
-                    dialog.dismiss()
-                }
-                .show()
+            .title(title)
+            .typeface(ResourcesCompat.getFont(activityCalling!!, R.font.brown_regular), ResourcesCompat.getFont(activityCalling!!, R.font.brown_thin))
+            .cancelable(true)
+            .contentLineSpacing(1.2f)
+            .buttonRippleColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimaryDark))
+            .positiveColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimaryDark))
+            .negativeColor(ContextCompat.getColor(activityCalling!!, R.color.colorPrimary))
+            .neutralColor(ContextCompat.getColor(activityCalling!!, R.color.colorLightDark))
+            .content(message)
+            .positiveText(activityCalling!!.getString(R.string.done))
+            .input(hint, defaultInput, false) { dialog, input ->
+                dialog.dismiss()
+                resultInterface.onReceivedData(input.trim().toString())
+            }
+            .onPositive { dialog, _ ->
+                dialog.dismiss()
+            }
+            .show()
 
     }
 
@@ -216,24 +218,24 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     private fun paymentRequest(paymentInfo: MoMoPaymentInfo) {
         paymentProgress.visibility = View.VISIBLE
         retrofit.paymentRequest(paymentInfo, apiToken).enqueue(
-                object : Callback<MoMoPaymentInfo> {
-                    override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
-                        timer?.start()
-                        paymentProgress?.visibility = View.GONE
-                        textViewMessage?.text = t.toString()
-                        buttonOptions?.visibility = View.VISIBLE
-                        buttonChange?.visibility = View.VISIBLE
-                    }
+            object : Callback<MoMoPaymentInfo> {
+                override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
+                    timer?.start()
+                    paymentProgress?.visibility = View.GONE
+                    textViewMessage?.text = t.toString()
+                    buttonOptions?.visibility = View.VISIBLE
+                    buttonChange?.visibility = View.VISIBLE
+                }
 
-                    override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
-                        if (response.isSuccessful) {
-                            timer?.start()
-                            buttonMobileMoneyAction.visibility = View.VISIBLE
-                            textViewMessage.text = getString(R.string.momo_authorization_message)
-                            updatePaymentStatus()
-                        }
+                override fun onResponse(call: Call<MoMoPaymentInfo>, response: Response<MoMoPaymentInfo>) {
+                    if (response.isSuccessful) {
+                        timer?.start()
+                        buttonMobileMoneyAction.visibility = View.VISIBLE
+                        textViewMessage.text = getString(R.string.momo_authorization_message)
+                        updatePaymentStatus()
                     }
-                })
+                }
+            })
     }
 
     //retry transaction
@@ -266,9 +268,9 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
         textViewNumber?.text = paymentInfo?.number
         var imageIcon = R.drawable.ic_mtn_money
         when (paymentInfo?.network) {
-            PaymentNetworks.VODAFONE.name -> imageIcon = R.drawable.ic_vodafone_cash
-            PaymentNetworks.AIRTEL.name -> imageIcon = R.drawable.ic_airtel_money
-            PaymentNetworks.TIGO.name -> imageIcon = R.drawable.ic_tigo_cash
+            MoMoPaymentNetworks.VODAFONE.name -> imageIcon = R.drawable.ic_vodafone_cash
+            MoMoPaymentNetworks.AIRTEL.name -> imageIcon = R.drawable.ic_airtel_money
+            MoMoPaymentNetworks.TIGO.name -> imageIcon = R.drawable.ic_tigo_cash
         }
         imageViewGetWayIcon.setImageResource(imageIcon)
     }
@@ -282,24 +284,24 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
     //get charge for momo transaction
     private fun calculateCharges() {
         retrofit.getMomoCharges(apiToken).enqueue(
-                object : Callback<JsonArrayResponse> {
-                    override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
-                        Log.e("error", t.toString())
-                    }
-
-                    override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
-                        val result = response.body()?.results
-                        val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
-                        chargeResult?.let {
-                            momoChargeValue = if (it.chargeType == MomoChargeType.FLAT.name) {
-                                it.chargeValue.toString()
-                            } else {
-                                round(paymentInfo!!.amount.times(it.chargeValue), 2)
-                            }
-                        }
-                        showCharges()
-                    }
+            object : Callback<JsonArrayResponse> {
+                override fun onFailure(call: Call<JsonArrayResponse>, t: Throwable) {
+                    Log.e("error", t.toString())
                 }
+
+                override fun onResponse(call: Call<JsonArrayResponse>, response: Response<JsonArrayResponse>) {
+                    val result = response.body()?.results
+                    val chargeResult = result?.find { it.lowerBound <= paymentInfo!!.amount && it.upperBound >= paymentInfo!!.amount }
+                    chargeResult?.let {
+                        momoChargeValue = if (it.chargeType == MomoChargeType.FLAT.name) {
+                            it.chargeValue.toString()
+                        } else {
+                            round(paymentInfo!!.amount.times(it.chargeValue), 2)
+                        }
+                    }
+                    showCharges()
+                }
+            }
         )
     }
 
@@ -318,12 +320,13 @@ class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() {
 
 
     companion object {
-        fun newInstance(activity: Activity, apiToken: String, paymentInfo: MoMoPaymentInfo? = null, callback: MoMoPaymentCallbackInterface) =
-                BottomSheetPaymentProcessor().apply {
-                    this.activityCalling = activity
-                    this.paymentInfo = paymentInfo
-                    this.paymentCallbackInterface = callback
-                    this.apiToken = apiToken
-                }
+        fun newInstance(activity: Activity, apiToken: String, paymentInfo: MoMoPaymentInfo? = null, paymentExtraInfo: MoMoPaymentExtraInfo? = null, callback: MoMoPaymentCallbackInterface) =
+            BottomSheetPaymentProcessor().apply {
+                this.activityCalling = activity
+                this.paymentInfo = paymentInfo
+                this.paymentCallbackInterface = callback
+                this.apiToken = apiToken
+                this.paymentExtraInfo = paymentExtraInfo
+            }
     }
 }

@@ -19,7 +19,7 @@ class MakePayment(private var context: AppCompatActivity) {
 
     //start momo processor
     fun startMoMoPaymentProcessor(paymentInfo: MoMoPaymentInfo, paymentExtraInfo: MoMoPaymentExtraInfo? = null, paymentCallbackInterface: MoMoPaymentCallbackInterface) {
-        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, apiToken, paymentInfo, paymentCallbackInterface)
+        val bottomSheetMoMoPaymentStatus = BottomSheetPaymentProcessor.newInstance(context, apiToken, paymentInfo,paymentExtraInfo,paymentCallbackInterface)
         bottomSheetMoMoPaymentStatus.isCancelable = false
         bottomSheetMoMoPaymentStatus.show(context.supportFragmentManager, tag)
     }

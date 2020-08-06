@@ -1,10 +1,10 @@
 package com.kudigo.mobile_money_util
 
-enum class PaymentStatus {
+enum class MoMoPaymentStatus {
     SUCCESS, PENDING, FAILED, CANCELLED
 }
 
-enum class PaymentNetworks {
+enum class MoMoPaymentNetworks {
    MTN,VODAFONE,AIRTEL,TIGO
 }
 
