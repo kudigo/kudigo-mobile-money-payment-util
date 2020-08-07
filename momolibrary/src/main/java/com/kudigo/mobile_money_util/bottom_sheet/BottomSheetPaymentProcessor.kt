@@ -37,6 +37,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
     private var timer: CountDownTimer? = null
     private var time = 2000000L
     private var momoChargeValue = "*.****"
+    private var defaultErrorMessage= "An error occured. Please try again"
     private var apiToken = ""
     private val networkOptions = arrayOf(MoMoPaymentNetworks.MTN.name, MoMoPaymentNetworks.VODAFONE.name, MoMoPaymentNetworks.AIRTEL.name, MoMoPaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
