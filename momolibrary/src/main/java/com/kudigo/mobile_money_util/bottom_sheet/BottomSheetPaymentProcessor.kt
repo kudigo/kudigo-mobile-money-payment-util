@@ -36,7 +36,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
     private var activityCalling: Activity? = null
     private var timer: CountDownTimer? = null
     private var time = 2000000L
-    private var momoChargeValue = "*.****"git
+    private var momoChargeValue = "*.****"
     private var apiToken = ""
     private val networkOptions = arrayOf(MoMoPaymentNetworks.MTN.name, MoMoPaymentNetworks.VODAFONE.name, MoMoPaymentNetworks.AIRTEL.name, MoMoPaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
