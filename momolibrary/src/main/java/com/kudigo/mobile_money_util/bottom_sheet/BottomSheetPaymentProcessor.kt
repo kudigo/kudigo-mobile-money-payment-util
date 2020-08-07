@@ -37,7 +37,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
     private var timer: CountDownTimer? = null
     private var time = 2000000L
     private var momoChargeValue = "*.****"
-    private var defaultErrorMessage= "An error occured. Please try again"
+    private var defaultErrorMessage= getString(R.string.error_message)
     private var apiToken = ""
     private val networkOptions = arrayOf(MoMoPaymentNetworks.MTN.name, MoMoPaymentNetworks.VODAFONE.name, MoMoPaymentNetworks.AIRTEL.name, MoMoPaymentNetworks.TIGO.name)
     private val retrofit = ServiceBuilder.buildService(ApiUrls::class.java)
@@ -48,6 +48,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
 
         //MARK: format the token in a format the api accepts
         apiToken = "Token $apiToken"
@@ -99,7 +100,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
         retrofit.checkPaymentStatus(transactionOrderId!!, apiToken).enqueue(
             object : Callback<TransactionResult> {
                 override fun onFailure(call: Call<TransactionResult>, t: Throwable) {
-                    transactionFailed(paymentExtraInfo!!.errorMessage)
+                    transactionFailed()
                 }
 
                 override fun onResponse(call: Call<TransactionResult>, response: Response<TransactionResult>) {
@@ -113,7 +114,7 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                         textViewMessage.setTextColor(activity!!.resources!!.getColor(R.color.colorPrimary))
                     } else if (result?.transactionStatus == MoMoPaymentStatus.FAILED.name) {
                         paymentInfo?.status = MoMoPaymentStatus.FAILED.name
-                        transactionFailed(getString(R.string.transaction_failed))
+                        transactionFailed()
                     }
                 }
             }
@@ -213,12 +214,17 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
 
 
     // transaction failed
-    private fun transactionFailed(message: String) {
+    private fun transactionFailed() {
         cancelTimerAction()
         buttonOptions?.visibility = View.VISIBLE
         buttonCancel?.visibility = View.VISIBLE
         paymentProgress?.visibility = View.GONE
-        textViewMessage?.text = paymentExtraInfo!!.errorMessage
+        if(paymentExtraInfo?.errorMessage!=null){
+            textViewMessage.text = paymentExtraInfo!!.errorMessage
+        }else{
+            textViewMessage.text = getString(R.string.default_error_message)
+        }
+
         textViewMessage.setTextColor(requireActivity().resources!!.getColor(R.color.colorRed))
     }
 
@@ -230,7 +236,12 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                 override fun onFailure(call: Call<MoMoPaymentInfo>, t: Throwable) {
                     timer?.start()
                     paymentProgress?.visibility = View.GONE
-                    textViewMessage?.text = paymentExtraInfo!!.retryMessage
+                    if(paymentExtraInfo?.retryMessage!=null){
+                        textViewMessage.text = paymentExtraInfo!!.retryMessage
+                    }else{
+                        textViewMessage.text = getString(R.string.default_error_message)
+                    }
+
                     buttonOptions?.visibility = View.VISIBLE
                     buttonChange?.visibility = View.VISIBLE
                 }
@@ -239,7 +250,11 @@ internal class BottomSheetPaymentProcessor : RoundedBottomSheetDialogFragment() 
                     if (response.isSuccessful) {
                         timer?.start()
                         buttonMobileMoneyAction.visibility = View.VISIBLE
-                        textViewMessage.text = paymentExtraInfo!!.authorisationMessage
+                        if(paymentExtraInfo?.authorisationMessage!=null){
+                            textViewMessage.text = paymentExtraInfo!!.authorisationMessage
+                        }else{
+                            textViewMessage.text = getString(R.string.momo_authorization_message)
+                        }
                         updatePaymentStatus()
                     }
                 }
