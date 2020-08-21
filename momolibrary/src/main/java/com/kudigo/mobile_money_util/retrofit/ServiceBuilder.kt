@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceBuilder {
 
-    private val BASE_URL = BuildConfig.BASE_URL
+    private val BASE_URL = "your_base_url"
 
 
     private val authInterceptor = Interceptor {chain->
