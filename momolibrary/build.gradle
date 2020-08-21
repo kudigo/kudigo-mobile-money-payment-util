@@ -11,8 +11,8 @@ android {
     def localProperties = new Properties()
     localProperties.load(new FileInputStream(rootProject.file("local.properties")))
 
-    def baseUrl = localProperties["baseUrl"]
-    def baseUrlTest = localProperties["baseUrlTest"]
+    def baseUrl = localProperties.getProperty('baseUrl','"defaultValue"')
+    def baseUrlTest = localProperties.getProperty('baseUrl','"defaultValue"')
   
 
 
