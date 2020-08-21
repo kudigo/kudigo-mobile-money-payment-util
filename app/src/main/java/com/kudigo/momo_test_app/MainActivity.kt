@@ -17,9 +17,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val paymentInfo = MoMoPaymentInfo(
-            id = "1596648967650",
+            id = "transaction_id",
             network = MoMoPaymentNetworks.MTN.name,
-            number = "0249668268",
+            number = "momo_number",
             voucherCode = "",
             amount = 200.0
         )
