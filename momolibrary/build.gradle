@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.Jooie'
+group = 'com.github.kudigo'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
