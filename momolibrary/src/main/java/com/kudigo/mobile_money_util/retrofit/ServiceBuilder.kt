@@ -8,7 +8,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ServiceBuilder {
 
-    private val BASE_URL = "your_base_url"
+    private const val BASE_URL = "http://api.server.com/"
+    private const val BASE_TEST_URL = "http://api.server.com/"
 
 
     private val authInterceptor = Interceptor {chain->
@@ -29,7 +30,7 @@ object ServiceBuilder {
             .build()
 
     private val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(if (BuildConfig.DEBUG) BASE_TEST_URL else BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
